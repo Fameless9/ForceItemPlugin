@@ -121,10 +121,12 @@ public class Timer implements CommandExecutor {
                 message.append(seconds).append("s ");
 
                 if (!isRunning()) {
-                    message.append("(paused)");
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.ITALIC.toString() + ChatColor.GOLD + message));
+                } else {
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.GOLD.toString() + message));
                 }
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.GOLD.toString() + message));
+
         }
     }
 }

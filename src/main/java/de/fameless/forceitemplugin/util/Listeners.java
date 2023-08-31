@@ -5,6 +5,7 @@ import de.fameless.forceitemplugin.manager.*;
 import de.fameless.forceitemplugin.team.TeamManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class Listeners implements Listener {
@@ -139,6 +141,17 @@ public class Listeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
         NametagManager.removeTag(event.getPlayer());
+        BossbarManager.removeBossbar(event.getPlayer());
+        BossbarManager.bossBarHashMap.remove(event.getPlayer().getUniqueId());
         event.setQuitMessage(ChatColor.YELLOW + event.getPlayer().getName() + " left the game");
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
+        if (event.getPlayer().hasPermission("forceitem.changegm")) return;
+        if (ExcludeCommand.excludedPlayers.contains(event.getPlayer().getUniqueId())) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Can't change gamemodes while excluded.");
+        }
     }
 }

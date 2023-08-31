@@ -34,27 +34,43 @@ public class ItemYML {
             }
         }
 
-        for (Material material : Material.values()) {
-            if (material.name().endsWith("SPAWN_EGG")) {
-                excludedMaterials.add(material);
+        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_spawn_eggs")) {
+            for (Material material : Material.values()) {
+                if (material.name().endsWith("SPAWN_EGG")) {
+                    excludedMaterials.add(material);
+                }
             }
         }
 
-        /* for (Material material : Material.values()) {
-            if (material.name().startsWith("MUSIC_DISC")) {
-                excludedMaterials.add(material);
-            }
-        } */
-
-        for (Material material : Material.values()) {
-            if (material.name().endsWith("BANNER_PATTERN") || material.name().endsWith("BANNER")) {
-                excludedMaterials.add(material);
+        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_music_discs")) {
+            for (Material material : Material.values()) {
+                if (material.name().startsWith("MUSIC_DISC")) {
+                    excludedMaterials.add(material);
+                }
             }
         }
 
-        for (Material material : Material.values()) {
-            if (material.name().endsWith("TEMPLATE")) {
-                excludedMaterials.add(material);
+        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_banner_patterns")) {
+            for (Material material : Material.values()) {
+                if (material.name().endsWith("BANNER_PATTERN")) {
+                    excludedMaterials.add(material);
+                }
+            }
+        }
+
+        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
+            for (Material material : Material.values()) {
+                if (material.name().endsWith("BANNER")) {
+                    excludedMaterials.add(material);
+                }
+            }
+        }
+
+        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_armor_templates")) {
+            for (Material material : Material.values()) {
+                if (material.name().endsWith("TEMPLATE")) {
+                    excludedMaterials.add(material);
+                }
             }
         }
 
@@ -71,7 +87,37 @@ public class ItemYML {
         }
 
         for (Material material : Material.values()) {
-            if (material.name().contains("WALL")) {
+            if (material.name().contains("WALL") && material.name().contains("TORCH")) {
+                excludedMaterials.add(material);
+            }
+        }
+
+        for (Material material : Material.values()) {
+            if (material.name().contains("WALL") && material.name().contains("SIGN")) {
+                excludedMaterials.add(material);
+            }
+        }
+
+        for (Material material : Material.values()) {
+            if (material.name().contains("WALL") && material.name().contains("HEAD")) {
+                excludedMaterials.add(material);
+            }
+        }
+
+        for (Material material : Material.values()) {
+            if (material.name().contains("WALL") && material.name().contains("CORAL")) {
+                excludedMaterials.add(material);
+            }
+        }
+
+        for (Material material : Material.values()) {
+            if (material.name().contains("WALL") && material.name().contains("BANNER")) {
+                excludedMaterials.add(material);
+            }
+        }
+
+        for (Material material : Material.values()) {
+            if (material.name().contains("WALL") && material.name().contains("SKULL")) {
                 excludedMaterials.add(material);
             }
         }

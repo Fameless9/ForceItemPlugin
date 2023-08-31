@@ -2,8 +2,13 @@
 # set to -1 to set the time to infinite (players can only win by collecting every item and challenge starts on server startup)
 challenge_duration: 5400
 
-# spawn eggs, armor trims, candle cakes, potted items, banner patterns are disabled by default
+# unobtainable items in creative are excluded by default
 # important: after adding/removing an item from excluded blocks, you need to delete the itemprogress.yml and restart your server
+exclude_spawn_eggs: true # unobtainable in survival
+exclude_music_discs: true # obtainable in survival
+exclude_banner_patterns: true # obtainable in survival
+exclude_banners: true # obtainable in survival
+exclude_armor_templates: true # obtainable in survival
 excluded_blocks:
   - CHAIN_COMMAND_BLOCK
   - COMMAND_BLOCK_MINECART

@@ -5,10 +5,7 @@ import de.fameless.forceitemplugin.manager.PointsManager;
 import de.fameless.forceitemplugin.team.InviteReactCommand;
 import de.fameless.forceitemplugin.team.TeamBackpack;
 import de.fameless.forceitemplugin.team.TeamCommand;
-import de.fameless.forceitemplugin.util.ItemYML;
-import de.fameless.forceitemplugin.util.Listeners;
-import de.fameless.forceitemplugin.util.SkipItemCommand;
-import de.fameless.forceitemplugin.util.Timer;
+import de.fameless.forceitemplugin.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
@@ -49,6 +46,7 @@ public final class ForceItemPlugin extends JavaPlugin {
         getCommand("team").setExecutor(new TeamCommand());
         getCommand("invite").setExecutor(new InviteReactCommand());
         getCommand("backpack").setExecutor(new TeamBackpack());
+        getCommand("exclude").setExecutor(new ExcludeCommand());
 
         Bukkit.getPluginManager().registerEvents(new Listeners(),this);
 

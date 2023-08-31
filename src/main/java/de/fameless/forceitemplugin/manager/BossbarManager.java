@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class BossbarManager {
 
-    private static final HashMap<UUID, BossBar> bossBarHashMap = new HashMap<>();
+    public static final HashMap<UUID, BossBar> bossBarHashMap = new HashMap<>();
 
     public static void createBossbar(Player player) {
         if (bossBarHashMap.get(player.getUniqueId()) != null) {
