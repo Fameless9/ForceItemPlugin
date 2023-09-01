@@ -1,6 +1,7 @@
 package de.fameless.forceitemplugin.util;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.LeaderboardManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -33,6 +34,10 @@ public class Timer implements CommandExecutor {
             if (args.length >= 1) {
                 switch (args[0]){
                     case "toggle":
+                        if (ChallengeManager.getChallengeType() == null) {
+                        player.sendMessage(ChatColor.GOLD + "You need to select a challenge to start the timer. /menu");
+                        return false;
+                        }
                         if (ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
                             player.sendMessage(ChatColor.RED + "Time is set to infinite.");
                             return false;
@@ -121,7 +126,7 @@ public class Timer implements CommandExecutor {
                 message.append(seconds).append("s ");
 
                 if (!isRunning()) {
-                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.ITALIC.toString() + ChatColor.GOLD + message));
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.GOLD.toString() + ChatColor.ITALIC + message));
                 } else {
                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.GOLD.toString() + message));
                 }

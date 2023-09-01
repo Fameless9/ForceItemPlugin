@@ -11,6 +11,7 @@ public class Team {
 
     private final int id;
     private int points;
+
     private final List<UUID> players;
     private final Inventory backpack = Bukkit.createInventory(null, 9*3, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Team Backpack");
 

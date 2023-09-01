@@ -14,6 +14,7 @@ public final class ForceItemPlugin extends JavaPlugin {
 
     private static ForceItemPlugin instance;
 
+    private ChallengeCommand challengeCommand;
     private Timer timer;
 
     @Override
@@ -22,6 +23,7 @@ public final class ForceItemPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         instance = this;
+        challengeCommand = new ChallengeCommand();
 
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
@@ -38,6 +40,11 @@ public final class ForceItemPlugin extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+        try {
+            BlockYML.setupItemFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         timer = new Timer();
 
@@ -47,8 +54,10 @@ public final class ForceItemPlugin extends JavaPlugin {
         getCommand("invite").setExecutor(new InviteReactCommand());
         getCommand("backpack").setExecutor(new TeamBackpack());
         getCommand("exclude").setExecutor(new ExcludeCommand());
+        getCommand("menu").setExecutor(challengeCommand);
 
         Bukkit.getPluginManager().registerEvents(new Listeners(),this);
+        Bukkit.getPluginManager().registerEvents(challengeCommand, this);
 
         int pluginId = 19683;
         Metrics metrics = new Metrics(this, pluginId);

@@ -28,7 +28,7 @@ public class TeamBackpack implements CommandExecutor {
                     break;
                 case "open":
                     if (Backpack.getBackpack(player) == null) {
-                        player.sendMessage(ChatColor.RED + "You have no backpack. This error shouldn't occur. Please message me on Discord: fameless9");
+                        player.sendMessage(ChatColor.RED + "You have no backpack. This error shouldn't occur. Try rejoining.");
                         return false;
                     }
                     player.openInventory(Backpack.getBackpack(player));

@@ -62,7 +62,7 @@ public class TeamCommand implements CommandExecutor {
                         target.sendMessage(ChatColor.AQUA + "You have been invited to a team.\n" +
                                 "Use /invite accept it, or /invite decline to decline it.");
                         break;
-                    case "remove":
+                    case "kick":
                         if (Timer.isRunning()) {
                             player.sendMessage(ChatColor.RED + "Can't do that, as the challenge has already started.");
                             return false;
@@ -81,7 +81,7 @@ public class TeamCommand implements CommandExecutor {
                             return false;
                         }
                         TeamManager.getTeam(player).removePlayer(target1);
-                        player.sendMessage(ChatColor.GREEN + "Player has been removed from your team.");
+                        player.sendMessage(ChatColor.GREEN + "Player has been kicked from your team.");
                         target1.sendMessage(ChatColor.RED + "You have been kicked from your team.");
                         NametagManager.updateNametag(target1);
                         break;
@@ -124,11 +124,11 @@ public class TeamCommand implements CommandExecutor {
                         }
                         break;
                     default:
-                        sender.sendMessage(ChatColor.RED + "Usage: /team <delete/list/create/invite/remove> <player>");
+                        sender.sendMessage(ChatColor.RED + "Usage: /team <delete/list/create/invite/kick> <player>");
                         break;
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "Usage: /team <delete/list/create/invite/remove> <player>");
+                sender.sendMessage(ChatColor.RED + "Usage: /team <delete/list/create/invite/kick> <player>");
             }
         } else {
             sender.sendMessage(ChatColor.RED + "Only players can use this command!");

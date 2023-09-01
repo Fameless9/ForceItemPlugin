@@ -22,8 +22,10 @@ public class ItemProvider {
         for (ItemFlag flag : itemFlags) {
             meta.addItemFlags(flag);
         }
+
         List<String> lores = new ArrayList<>();
         Collections.addAll(lores, lore);
+
         meta.setLore(lores);
         item.setItemMeta(meta);
         return item;

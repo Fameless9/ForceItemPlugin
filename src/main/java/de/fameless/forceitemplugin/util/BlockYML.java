@@ -1,23 +1,22 @@
 package de.fameless.forceitemplugin.util;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class ItemYML {
+public class BlockYML {
 
     private static File file;
     private static YamlConfiguration configuration;
 
     public static void setupItemFile() throws IOException {
-        file = new File(ForceItemPlugin.getInstance().getDataFolder(), "itemprogress.yml");
+        file = new File(ForceItemPlugin.getInstance().getDataFolder(), "blockprogress.yml");
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -28,12 +27,6 @@ public class ItemYML {
 
         List<Material> materials = new ArrayList<>();
         List<Material> excludedMaterials = new ArrayList<>();
-
-        for (String s : ForceItemPlugin.getInstance().getConfig().getStringList("excluded_items")) {
-            if (Material.getMaterial(s) != null ) {
-                excludedMaterials.add(Material.getMaterial(s));
-            }
-        }
 
         if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_spawn_eggs")) {
             for (Material material : Material.values()) {
@@ -129,20 +122,29 @@ public class ItemYML {
             }
         }
 
+        for (String s : ForceItemPlugin.getInstance().getConfig().getStringList("excluded_blocks")) {
+            if (Material.getMaterial(s) != null) {
+                excludedMaterials.add(Material.getMaterial(s));
+            }
+        }
+
         for (Material material : Material.values()) {
+            if (!material.isSolid()) continue;
             if (excludedMaterials.contains(material)) continue;
             materials.add(material);
         }
 
         for (Material material : materials) {
-            configuration.set(player.getName() + "." + material.toString(), false);
-            configuration.save(file);
+            configuration.set(player.getName() + "." + material.name(), false);
+            saveBlockConfig();
         }
     }
-    public static YamlConfiguration getItemProgressConfig() {
+
+    public static YamlConfiguration getBlockProgressConfig () {
         return configuration;
     }
-    public static void saveItemConfig() {
+
+    public static void saveBlockConfig() {
         try {
             configuration.save(file);
         } catch (IOException e) {

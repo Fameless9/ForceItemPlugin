@@ -14,3 +14,4 @@ commands:
     aliases:
       - bp
   exclude:
+  menu:

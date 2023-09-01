@@ -33,7 +33,9 @@ public class InviteReactCommand implements CommandExecutor {
                         for (UUID playerId : team.getPlayers()) {
                             if (Bukkit.getPlayer(playerId) != null) {
                                 Player player1 = Bukkit.getPlayer(playerId);
-                                player1.sendMessage(ChatColor.GREEN + player.getName() + " has joined your team.");
+                                if (player1 != player) {
+                                    player1.sendMessage(ChatColor.GREEN + player.getName() + " has joined your team.");
+                                }
                             }
                         }
                         break;

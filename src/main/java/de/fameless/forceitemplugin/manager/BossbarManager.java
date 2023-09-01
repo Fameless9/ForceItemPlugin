@@ -1,5 +1,6 @@
 package de.fameless.forceitemplugin.manager;
 
+import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,19 +34,39 @@ public class BossbarManager {
 
     private static BossBar getBossbar(Player player) {
         BossBar bossBar;
-        if (ItemManager.nextItem(player) == null) {
-            Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has won by collecting every item.");
-            Timer.setRunning(false);
-            LeaderboardManager.displayLeaderboard();
-            bossBar = Bukkit.createBossBar(ChatColor.GREEN.toString() + ChatColor.BOLD + "COMPLETE" + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD +
-                            "Points" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + PointsManager.getPoints(player),
-                    BarColor.RED, BarStyle.SOLID);
+        if (ChallengeManager.getChallengeType() == null) {
+            bossBar = Bukkit.createBossBar(ChatColor.GOLD + "No challenge selected. /menu", BarColor.WHITE, BarStyle.SOLID);
+        } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
+            if (ItemManager.nextItem(player) == null) {
+                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has won by collecting every item.");
+                Timer.setRunning(false);
+                LeaderboardManager.displayLeaderboard();
+                bossBar = Bukkit.createBossBar(ChatColor.GREEN.toString() + ChatColor.BOLD + "COMPLETE" + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD +
+                                "Points" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + PointsManager.getPoints(player),
+                        BarColor.RED, BarStyle.SOLID);
+            } else {
+                String itemName = formatItemName(ItemManager.itemMap.get(player.getUniqueId()).name()).replace("_", " ");
+                bossBar = Bukkit.createBossBar(ChatColor.GOLD + "Item" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                                itemName + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD +
+                                "Points" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + PointsManager.getPoints(player),
+                        BarColor.RED, BarStyle.SOLID);
+            }
+        } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+            if (ItemManager.nextItem(player) == null) {
+                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has won by collecting every item.");
+                Timer.setRunning(false);
+                LeaderboardManager.displayLeaderboard();
+                bossBar = Bukkit.createBossBar(ChatColor.GREEN.toString() + ChatColor.BOLD + "COMPLETE" + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD +
+                                "Points" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + PointsManager.getPoints(player),
+                        BarColor.RED, BarStyle.SOLID);
+            } else {
+                String blockName = formatItemName(ItemManager.blockMap.get(player.getUniqueId()).name().replace("_", " "));
+                bossBar = Bukkit.createBossBar(ChatColor.GOLD + "Block" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                        blockName + ChatColor.GRAY + " | " + ChatColor.GOLD + "Points" + ChatColor.DARK_GRAY + ": " +
+                        ChatColor.GOLD + PointsManager.getPoints(player), BarColor.WHITE, BarStyle.SOLID);
+            }
         } else {
-            String itemName = formatItemName(ItemManager.itemMap.get(player.getUniqueId()).name()).replace("_", " ");
-            bossBar = Bukkit.createBossBar(ChatColor.GOLD + "Item" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
-                            itemName + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD +
-                            "Points" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + PointsManager.getPoints(player),
-                    BarColor.RED, BarStyle.SOLID);
+            bossBar = Bukkit.createBossBar(ChatColor.GOLD + "No challenge selected. /menu", BarColor.WHITE, BarStyle.SOLID);
         }
         bossBar.addPlayer(player);
         bossBarHashMap.put(player.getUniqueId(), bossBar);

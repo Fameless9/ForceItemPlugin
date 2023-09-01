@@ -12,9 +12,6 @@ public class TeamManager {
     public static HashMap<Integer, Team> teamMap = new HashMap<>();
 
     public static void createTeam(List<UUID> players) {
-        if (allTeams.size() == 52) {
-            return;
-        }
         Team newTeam = new Team(allTeams.size() + 1, players);
         allTeams.add(newTeam);
         teamMap.put(allTeams.size(), newTeam);

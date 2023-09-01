@@ -23,6 +23,10 @@ public class ExcludeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
 
+        if (!commandSender.hasPermission("forceitem.exclude")) {
+            commandSender.sendMessage(ChatColor.RED + "Lacking permission: forceitem.exclude");
+            return false;
+        }
         if (args.length > 0) {
             for (String s : args) {
                 if (Bukkit.getPlayerExact(s) != null) {

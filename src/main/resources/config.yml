@@ -9,7 +9,7 @@ exclude_music_discs: true # obtainable in survival
 exclude_banner_patterns: true # obtainable in survival
 exclude_banners: true # obtainable in survival
 exclude_armor_templates: true # obtainable in survival
-excluded_blocks:
+excluded_items:
   - CHAIN_COMMAND_BLOCK
   - COMMAND_BLOCK_MINECART
   - COMMAND_BLOCK
@@ -49,3 +49,4 @@ excluded_blocks:
   - BUBBLE_COLUMN
   - CAVE_AIR
   - KNOWLEDGE_BOOK
+excluded_blocks:
