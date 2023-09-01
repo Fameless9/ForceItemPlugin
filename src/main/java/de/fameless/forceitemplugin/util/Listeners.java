@@ -229,4 +229,8 @@ public class Listeners implements Listener {
         Material playerBlockType = ItemManager.blockMap.get(player.getUniqueId());
         return blockState.getType() == playerBlockType;
     }
+
+    public static ItemStack getSkipItem() {
+        return skipItem;
+    }
 }

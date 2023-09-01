@@ -1,8 +1,10 @@
 package de.fameless.forceitemplugin.manager;
 
+import de.fameless.forceitemplugin.ForceItemPlugin;
 import de.fameless.forceitemplugin.util.BlockYML;
 import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ItemYML;
+import de.fameless.forceitemplugin.util.Listeners;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import java.util.*;
@@ -22,6 +24,10 @@ public class ItemManager {
                 BlockYML.getBlockProgressConfig().set(player.getName() + "." + material.name(), false);
             }
         }
+
+        player.getInventory().remove(Listeners.getSkipItem());
+        player.getLocation().getWorld().dropItemNaturally(player.getLocation(), Listeners.getSkipItem());
+
         ItemYML.saveItemConfig();
         BlockYML.saveBlockConfig();
         PointsManager.setPoints(player, 0);
