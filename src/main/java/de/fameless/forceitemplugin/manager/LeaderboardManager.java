@@ -1,5 +1,6 @@
 package de.fameless.forceitemplugin.manager;
 
+import de.fameless.forceitemplugin.ForceItemPlugin;
 import de.fameless.forceitemplugin.team.Team;
 import de.fameless.forceitemplugin.team.TeamManager;
 import org.bukkit.Bukkit;
@@ -51,5 +52,16 @@ public class LeaderboardManager {
             }
         }
         Bukkit.getServer().broadcastMessage(message.toString());
+        if (!ForceItemPlugin.getInstance().getConfig().getBoolean("leaderboard_message")) {
+            Bukkit.broadcastMessage(ChatColor.GRAY + "Hello, Thanks a lot for playing my plugin.\n" +
+                    "I hope you didn't encounter any bugs, but if you did,\n" +
+                    "please let me know so I can release a hotfix.\n" +
+                    "Feedback is always welcome. If you want to leave" +
+                    "your opinion about the plugin, please do so on the Spigot Resource page:\n" +
+                    "https://www.spigotmc.org/threads/1-20-x-24-7-support-force-item-battle-force-block-battle.617543/" +
+                    "\nThis message will not be sent again.");
+            ForceItemPlugin.getInstance().getConfig().set("leaderboard_message", true);
+            ForceItemPlugin.getInstance().saveConfig();
+        }
     }
 }

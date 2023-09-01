@@ -1,6 +1,7 @@
 # adjust challenge duration (seconds)
 # set to -1 to set the time to infinite (players can only win by collecting every item and challenge starts on server startup)
 challenge_duration: 5400
+leaderboard_message: false
 
 # unobtainable items in creative are excluded by default
 # important: after adding/removing an item from excluded blocks, you need to delete the itemprogress.yml and restart your server
