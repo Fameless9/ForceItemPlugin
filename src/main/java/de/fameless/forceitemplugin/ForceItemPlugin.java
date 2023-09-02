@@ -1,6 +1,7 @@
 package de.fameless.forceitemplugin;
 
 import de.fameless.forceitemplugin.bStats.Metrics;
+import de.fameless.forceitemplugin.bStats.UpdateChecker;
 import de.fameless.forceitemplugin.manager.PointsManager;
 import de.fameless.forceitemplugin.team.InviteReactCommand;
 import de.fameless.forceitemplugin.team.TeamBackpack;
@@ -28,6 +29,14 @@ public final class ForceItemPlugin extends JavaPlugin {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
+
+        new UpdateChecker(this, 112328).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                getLogger().info("Force Battle Plugin up to date!");
+            } else {
+                getLogger().info("There is a new update available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
+            }
+        });
 
         try {
             PointsManager.setupPoints();
