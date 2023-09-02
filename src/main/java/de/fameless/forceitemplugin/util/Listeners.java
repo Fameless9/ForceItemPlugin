@@ -72,6 +72,11 @@ public class Listeners implements Listener {
             ForceItemPlugin.getInstance().getConfig().set(event.getPlayer().getName() + ".hasBarrier", true);
             ForceItemPlugin.getInstance().saveConfig();
         }
+        if (!ForceItemPlugin.getInstance().isUpdated) {
+            if (event.getPlayer().isOp()) {
+                event.getPlayer().sendMessage(ChatColor.GRAY + "[ForceBattle] New version is available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)

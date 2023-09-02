@@ -17,6 +17,7 @@ public final class ForceItemPlugin extends JavaPlugin {
 
     private ChallengeCommand challengeCommand;
     private Timer timer;
+    public boolean isUpdated = true;
 
     @Override
     public void onEnable() {
@@ -35,6 +36,7 @@ public final class ForceItemPlugin extends JavaPlugin {
                 getLogger().info("Force Battle Plugin up to date!");
             } else {
                 getLogger().severe("There is a new update available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
+                isUpdated = false;
             }
         });
 
