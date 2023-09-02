@@ -36,10 +36,8 @@ public class PointsManager {
     public static void addPoint(Player player) {
         int newPoints = getPoints(player) + 1;
         if (TeamManager.getTeam(player) != null) {
-
             Team team = TeamManager.getTeam(player);
             team.setPoints(newPoints);
-
             for (UUID uuid : team.getPlayers()) {
                 if (Bukkit.getPlayer(uuid) != null) {
                     configuration.set(Bukkit.getPlayer(uuid).getName(), newPoints);
@@ -48,7 +46,6 @@ public class PointsManager {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     BossbarManager.updateBossbar(Bukkit.getPlayer(uuid));
                     NametagManager.updateNametag(Bukkit.getPlayer(uuid));
                     LeaderboardManager.adjustPoints(Bukkit.getPlayer(uuid));

@@ -1,9 +1,7 @@
 package de.fameless.forceitemplugin.util;
 
 import de.fameless.forceitemplugin.manager.ChallengeManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,6 +42,8 @@ public class ChallengeCommand implements CommandExecutor, Listener {
             return "No challenge selected.";
         }
     }
+    public static boolean isKeepInventory = true;
+    public static boolean isBackpackEnabled;
 
     public static Inventory getInventory() {
         Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Challenges");
@@ -53,6 +53,12 @@ public class ChallengeCommand implements CommandExecutor, Listener {
         inventory.setItem(1, ItemProvider.ItemBuilder(new ItemStack(Material.GRASS_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Block", "", ChatColor.BLUE + "Click to start Force Block.", "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(),
                 "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+        inventory.setItem(8, ItemProvider.ItemBuilder(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Keep Inventory", "", ChatColor.BLUE + "Click to toggle Keep Inventory in all worlds.", "",
+                ChatColor.BLUE + "Currently set to: " + !isKeepInventory));
+        inventory.setItem(7, ItemProvider.ItemBuilder(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "",
+                ChatColor.BLUE + "Currently set to: " + isBackpackEnabled));
         return inventory;
     }
 
@@ -68,6 +74,24 @@ public class ChallengeCommand implements CommandExecutor, Listener {
         if (event.getSlot() == 1) {
             if (ChallengeManager.getChallengeType() == null || ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 ChallengeManager.setChallengeType(ChallengeType.FORCE_BLOCK);
+            }
+        }
+        if (event.getSlot() == 8) {
+            for (World world : Bukkit.getServer().getWorlds()) {
+                if (world != null) {
+                    world.setGameRule(GameRule.KEEP_INVENTORY, isKeepInventory);
+                    event.getWhoClicked().sendMessage(ChatColor.GOLD + "KeepInventory has been set to " + isKeepInventory + " for world: " + world.getName());
+                }
+            }
+            Bukkit.broadcastMessage(ChatColor.GOLD + "Keep Inventory has been set to " + isKeepInventory);
+            isKeepInventory = !isKeepInventory;
+        }
+        if (event.getSlot() == 7) {
+            isBackpackEnabled = !isBackpackEnabled;
+            if (isBackpackEnabled) {
+                Bukkit.broadcastMessage(ChatColor.GOLD + "Backpacks have been enabled.");
+            } else {
+                Bukkit.broadcastMessage(ChatColor.GOLD + "Backpacks have been disabled.");
             }
         }
         event.getWhoClicked().openInventory(getInventory());

@@ -1,6 +1,7 @@
 package de.fameless.forceitemplugin.team;
 
 import de.fameless.forceitemplugin.manager.NametagManager;
+import de.fameless.forceitemplugin.manager.PointsManager;
 import de.fameless.forceitemplugin.util.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,6 +34,7 @@ public class TeamCommand implements CommandExecutor {
                         players.add(player.getUniqueId());
                         if (TeamManager.getTeam(player) == null) {
                             TeamManager.createTeam(players);
+                            TeamManager.getTeam(player).setPoints(PointsManager.getPoints(player));
                             player.sendMessage(ChatColor.GREEN + "New team has been created.");
                             NametagManager.updateNametag(player);
                         } else {

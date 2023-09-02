@@ -1,6 +1,7 @@
 package de.fameless.forceitemplugin.manager;
 
 import de.fameless.forceitemplugin.team.TeamManager;
+import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ExcludeCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,38 +11,39 @@ import org.bukkit.scoreboard.Team;
 public class NametagManager {
 
     public static void setupNametag(Player player) {
-        Team team = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(player.getUniqueId().toString());
-        if (team == null) {
-            Team newTeam = Bukkit.getScoreboardManager().getMainScoreboard().registerNewTeam(player.getUniqueId().toString());
-            if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) {
-                newTeam.setSuffix(ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC + " (excluded)");
-                return;
-            }
-            if (TeamManager.getTeam(player) == null) {
-                newTeam.setSuffix(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player));
-                return;
-            }
-            newTeam.setSuffix(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player) + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Team: " + TeamManager.getTeam(player).getId());
-            return;
-        }
-        if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) {
-            team.setSuffix(ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC + " (excluded)");
-            return;
-        }
-        team.setSuffix(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player));
+        getNametag(player);
     }
 
     public static void updateNametag(Player player) {
+        getNametag(player);
+    }
+
+    private static void getNametag(Player player) {
         Team team = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(player.getUniqueId().toString());
+        if (team == null) {
+            team = Bukkit.getScoreboardManager().getMainScoreboard().registerNewTeam(player.getUniqueId().toString());
+        }
         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) {
             team.setSuffix(ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC + " (excluded)");
             return;
         }
-        if (TeamManager.getTeam(player) == null) {
-            team.setSuffix(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player));
-            return;
+        StringBuilder suffix = new StringBuilder();
+        suffix.append(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player));
+        if (ChallengeManager.getChallengeType() != null) {
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM) && ItemManager.itemMap.get(player.getUniqueId()) != null) {
+                suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Item" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                        BossbarManager.formatItemName(ItemManager.itemMap.get(player.getUniqueId()).name()).replace("_", " "));
+            }
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK) && ItemManager.blockMap.get(player.getUniqueId()) != null) {
+                suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Block" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                        BossbarManager.formatItemName(ItemManager.blockMap.get(player.getUniqueId()).name()).replace("_", " "));
+            }
         }
-        team.setSuffix(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player) + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Team: " + TeamManager.getTeam(player).getId());
+        if (TeamManager.getTeam(player) != null) {
+            suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Team" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + TeamManager.getTeam(player).getId());
+        }
+        String formattedSuffix = String.valueOf(suffix).replace("_", " ");
+        team.setSuffix(formattedSuffix);
     }
 
     public static void newTag(Player player) {

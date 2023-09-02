@@ -38,7 +38,7 @@ public class BlockYML {
 
         if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_music_discs")) {
             for (Material material : Material.values()) {
-                if (material.name().startsWith("MUSIC_DISC")) {
+                if (material.name().contains("DISC")) {
                     excludedMaterials.add(material);
                 }
             }

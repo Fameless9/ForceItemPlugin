@@ -8,6 +8,8 @@ import de.fameless.forceitemplugin.team.TeamBackpack;
 import de.fameless.forceitemplugin.team.TeamCommand;
 import de.fameless.forceitemplugin.util.*;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.time.Duration;
@@ -67,6 +69,12 @@ public final class ForceItemPlugin extends JavaPlugin {
 
         int pluginId = 19683;
         Metrics metrics = new Metrics(this, pluginId);
+
+        if (ChallengeCommand.isKeepInventory) {
+            for (World world : Bukkit.getServer().getWorlds()) {
+                world.setGameRule(GameRule.KEEP_INVENTORY, true);
+            }
+        }
     }
 
     public static ForceItemPlugin getInstance() {

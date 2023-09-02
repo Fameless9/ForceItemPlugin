@@ -1,6 +1,7 @@
 package de.fameless.forceitemplugin.team;
 
 import de.fameless.forceitemplugin.util.Backpack;
+import de.fameless.forceitemplugin.util.ChallengeCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,6 +15,10 @@ public class TeamBackpack implements CommandExecutor {
 
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players can use this command!");
+            return false;
+        }
+        if (!ChallengeCommand.isBackpackEnabled) {
+            sender.sendMessage(ChatColor.RED + "Backpacks are disabled.");
             return false;
         }
         Player player = (Player) sender;

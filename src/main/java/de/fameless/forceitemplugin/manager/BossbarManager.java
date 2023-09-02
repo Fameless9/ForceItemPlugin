@@ -53,7 +53,7 @@ public class BossbarManager {
             }
         } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
             if (ItemManager.nextItem(player) == null) {
-                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has won by collecting every item.");
+                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has won by completing every block.");
                 Timer.setRunning(false);
                 LeaderboardManager.displayLeaderboard();
                 bossBar = Bukkit.createBossBar(ChatColor.GREEN.toString() + ChatColor.BOLD + "COMPLETE" + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD +
@@ -62,7 +62,7 @@ public class BossbarManager {
             } else {
                 String blockName = formatItemName(ItemManager.blockMap.get(player.getUniqueId()).name().replace("_", " "));
                 bossBar = Bukkit.createBossBar(ChatColor.GOLD + "Block" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
-                        blockName + ChatColor.GRAY + " | " + ChatColor.GOLD + "Points" + ChatColor.DARK_GRAY + ": " +
+                        blockName + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Points" + ChatColor.DARK_GRAY + ": " +
                         ChatColor.GOLD + PointsManager.getPoints(player), BarColor.WHITE, BarStyle.SOLID);
             }
         } else {
@@ -73,7 +73,7 @@ public class BossbarManager {
         return bossBar;
     }
 
-    private static String formatItemName(String input) {
+    public static String formatItemName(String input) {
         String[] words = input.split(" ");
 
         StringBuilder formatted = new StringBuilder();

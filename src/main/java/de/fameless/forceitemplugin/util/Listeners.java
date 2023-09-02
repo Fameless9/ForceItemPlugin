@@ -96,21 +96,9 @@ public class Listeners implements Listener {
         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
         if (ItemManager.nextItem(player) == null) return;
         if (ItemManager.isFinished(player, event.getItem().getItemStack().getType())) return;
-        if (!event.getItem().getItemStack().getType().equals(ItemManager.itemMap.get(event.getEntity().getUniqueId())))
-            return;
-        if (TeamManager.getTeam(player) != null) {
-            for (UUID teamPlayers : TeamManager.getTeam(player).getPlayers()) {
-                if (Bukkit.getPlayer(teamPlayers) != null) {
-                    PointsManager.addPoint(Bukkit.getPlayer(teamPlayers));
-                }
-            }
-            ItemManager.markedAsFinished(player, event.getItem().getItemStack().getType());
-            ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
-            NametagManager.updateNametag(player);
-            BossbarManager.updateBossbar(player);
-            return;
-        }
+        if (!event.getItem().getItemStack().getType().equals(ItemManager.itemMap.get(event.getEntity().getUniqueId()))) return;
         ItemManager.markedAsFinished(player, event.getItem().getItemStack().getType());
+        Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " found " + BossbarManager.formatItemName(event.getItem().getItemStack().getType().name()).replace("_", " "));
         ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
         PointsManager.addPoint(player);
         NametagManager.updateNametag(player);
@@ -145,20 +133,23 @@ public class Listeners implements Listener {
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), new ItemStack(ItemManager.itemMap.get(event.getPlayer().getUniqueId())));
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.itemMap.get(event.getPlayer().getUniqueId()));
+                String itemName = BossbarManager.formatItemName(ItemManager.itemMap.get(event.getPlayer().getUniqueId()).name());
+                itemName.replace("_", " ");
+                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped " + itemName.replace("_", " "));
                 ItemManager.itemMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
                 BossbarManager.updateBossbar(event.getPlayer());
                 event.getPlayer().sendMessage(ChatColor.GREEN + "Skipped current item.");
-                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped their item.");
             } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.blockMap.get(event.getPlayer().getUniqueId()));
+                String blockName = BossbarManager.formatItemName(ItemManager.blockMap.get(event.getPlayer().getUniqueId()).name());
+                blockName.replace("_", " ");
+                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped " + blockName.replace("_", " "));
                 ItemManager.blockMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
                 BossbarManager.updateBossbar(event.getPlayer());
-                event.getPlayer().sendMessage(ChatColor.GREEN + "Skipped current item.");
-                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped their item.");
             }
         }
     }
@@ -190,7 +181,7 @@ public class Listeners implements Listener {
         if (event.getPlayer().hasPermission("forceitem.changegm")) return;
         if (ExcludeCommand.excludedPlayers.contains(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "Can't change gamemodes while excluded.");
+            event.getPlayer().sendMessage(ChatColor.RED + "Can't change gamemode while excluded.");
         }
     }
 
@@ -210,20 +201,8 @@ public class Listeners implements Listener {
         BlockState blockBelowState = blockBelow.getState();
 
         if (isSameBlockType(blockState, player) || isSameBlockType(blockBelowState, player)) {
-            if (TeamManager.getTeam(player) != null) {
-                for (UUID teamPlayers : TeamManager.getTeam(player).getPlayers()) {
-                    Player teamPlayer = Bukkit.getPlayer(teamPlayers);
-                    if (teamPlayer != null) {
-                        PointsManager.addPoint(teamPlayer);
-                    }
-                }
-                ItemManager.markedAsFinished(player, block.getType());
-                ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
-                NametagManager.updateNametag(player);
-                BossbarManager.updateBossbar(player);
-                return;
-            }
             ItemManager.markedAsFinished(player, block.getType());
+            Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " finished " + BossbarManager.formatItemName(ItemManager.blockMap.get(player.getUniqueId()).name()).replace("_", " "));
             ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
             PointsManager.addPoint(player);
             NametagManager.updateNametag(player);
