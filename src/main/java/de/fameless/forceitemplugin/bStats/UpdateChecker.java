@@ -37,7 +37,7 @@ public class UpdateChecker {
 
                 String currentVersion = ForceItemPlugin.getInstance().getDescription().getVersion();
                 if (latestVersion != null && !latestVersion.equalsIgnoreCase(currentVersion)) {
-                    ForceItemPlugin.getInstance().getLogger().info("[Force Battle Plugin] A new update is available! Version " + latestVersion + " can be downloaded from the SpigotMC website: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
+                    Bukkit.getLogger().info("[Force Battle Plugin] A new update is available! Version " + latestVersion + " can be downloaded from the SpigotMC website: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
                     ForceItemPlugin.isUpdated = false;
                 }
                 lastCheckTime = currentTime;
