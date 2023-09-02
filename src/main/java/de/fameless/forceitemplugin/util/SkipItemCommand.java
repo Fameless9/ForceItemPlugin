@@ -26,6 +26,10 @@ public class SkipItemCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "Lacking permission: 'forceitem.skip'");
             return false;
         }
+        if (ChallengeManager.getChallengeType() == null) {
+            sender.sendMessage(ChatColor.RED + "No challenge selected.");
+            return false;
+        }
         if (args.length != 1) return false;
         if (sender instanceof Player) {
             if (Bukkit.getPlayerExact(args[0]) == null) return false;
