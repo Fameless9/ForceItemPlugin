@@ -18,7 +18,7 @@ public final class ForceItemPlugin extends JavaPlugin {
 
     private ChallengeCommand challengeCommand;
     private Timer timer;
-    public boolean isUpdated = true;
+    public static boolean isUpdated = true;
     private UpdateChecker updateChecker = new UpdateChecker(112328, Duration.ofHours(2));
 
     @Override
