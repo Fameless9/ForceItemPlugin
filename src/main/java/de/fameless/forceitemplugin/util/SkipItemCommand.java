@@ -44,16 +44,16 @@ public class SkipItemCommand implements CommandExecutor {
                 ForceItemPlugin.getInstance().getConfig().set("excluded_items", excludedItems);
                 ForceItemPlugin.getInstance().saveConfig();
                 player.sendMessage(ChatColor.GREEN + "An operator skipped your item.");
-                ItemManager.markedAsFinished(player, ItemManager.blockMap.get(player.getUniqueId()));
-                ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
+                ItemManager.markedAsFinished(player, ItemManager.itemMap.get(player.getUniqueId()));
+                ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
             } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 List<String> excludedBlocks = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_blocks");
                 excludedBlocks.add(ItemManager.blockMap.get(player.getUniqueId()).name());
                 ForceItemPlugin.getInstance().getConfig().set("excluded_blocks", excludedBlocks);
                 ForceItemPlugin.getInstance().saveConfig();
                 player.sendMessage(ChatColor.GREEN + "An operator skipped your item.");
-                ItemManager.markedAsFinished(player, ItemManager.itemMap.get(player.getUniqueId()));
-                ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
+                ItemManager.markedAsFinished(player, ItemManager.blockMap.get(player.getUniqueId()));
+                ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
             }
             NametagManager.updateNametag(player);
             BossbarManager.updateBossbar(player);
