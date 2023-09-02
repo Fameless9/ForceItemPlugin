@@ -2,31 +2,46 @@ package de.fameless.forceitemplugin.bStats;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
-import java.util.function.Consumer;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.logging.Level;
 
 public class UpdateChecker {
-
-    private final JavaPlugin plugin;
     private final int resourceId;
+    private final Duration checkInterval;
+    private Instant lastCheckTime;
 
-    public UpdateChecker(JavaPlugin plugin, int resourceId) {
-        this.plugin = plugin;
+    public UpdateChecker(int resourceId, Duration checkInterval) {
         this.resourceId = resourceId;
+        this.checkInterval = checkInterval;
+        this.lastCheckTime = Instant.MIN;
     }
 
-    public void getVersion(final Consumer<String> consumer) {
+    public void checkForUpdates() {
         Bukkit.getScheduler().runTaskAsynchronously(ForceItemPlugin.getInstance(), () -> {
-            try (InputStream is = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.resourceId + "/~").openStream(); Scanner scann = new Scanner(is)) {
-                if (scann.hasNext()) {
-                    consumer.accept(scann.next());
+            Instant currentTime = Instant.now();
+            if (Duration.between(lastCheckTime, currentTime).compareTo(checkInterval) < 0) {
+                return;
+            }
+
+            try {
+                URL url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + resourceId);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                String latestVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
+
+                String currentVersion = ForceItemPlugin.getInstance().getDescription().getVersion();
+                if (latestVersion != null && !latestVersion.equalsIgnoreCase(currentVersion)) {
+                    ForceItemPlugin.getInstance().getLogger().info("[Force Battle Plugin] A new update is available! Version " + latestVersion + " can be downloaded from the SpigotMC website: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
                 }
+                lastCheckTime = currentTime; // Update the last check time
             } catch (IOException e) {
-                plugin.getLogger().info("Unable to check for updates: " + e.getMessage());
+                ForceItemPlugin.getInstance().getLogger().log(Level.WARNING, "Failed to check for updates: " + e.getMessage(), e);
             }
         });
     }

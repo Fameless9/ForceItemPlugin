@@ -10,6 +10,7 @@ import de.fameless.forceitemplugin.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
+import java.time.Duration;
 
 public final class ForceItemPlugin extends JavaPlugin {
 
@@ -18,6 +19,7 @@ public final class ForceItemPlugin extends JavaPlugin {
     private ChallengeCommand challengeCommand;
     private Timer timer;
     public boolean isUpdated = true;
+    private UpdateChecker updateChecker = new UpdateChecker(112328, Duration.ofHours(2));
 
     @Override
     public void onEnable() {
@@ -27,18 +29,11 @@ public final class ForceItemPlugin extends JavaPlugin {
         instance = this;
         challengeCommand = new ChallengeCommand();
 
+        updateChecker.checkForUpdates();
+
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
-
-        new UpdateChecker(this, 112328).getVersion(version -> {
-            if (this.getDescription().getVersion().equals(version)) {
-                getLogger().info("Force Battle Plugin up to date!");
-            } else {
-                getLogger().severe("There is a new update available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
-                isUpdated = false;
-            }
-        });
 
         try {
             PointsManager.setupPoints();
