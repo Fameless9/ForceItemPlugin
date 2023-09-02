@@ -1,6 +1,5 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
 import de.fameless.forceitemplugin.util.BlockYML;
 import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ItemYML;
@@ -26,7 +25,7 @@ public class ItemManager {
         }
 
         player.getInventory().remove(Listeners.getSkipItem());
-        player.getLocation().getWorld().dropItemNaturally(player.getLocation(), Listeners.getSkipItem());
+        player.getInventory().setItem(8, Listeners.getSkipItem());
 
         ItemYML.saveItemConfig();
         BlockYML.saveBlockConfig();

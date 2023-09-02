@@ -34,7 +34,7 @@ public class SkipItemCommand implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED + "Player has already collected every item!");
                 return false;
             }
-            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 List<String> excludedItems = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_items");
                 excludedItems.add(ItemManager.itemMap.get(player.getUniqueId()).name());
                 ForceItemPlugin.getInstance().getConfig().set("excluded_items", excludedItems);
@@ -42,7 +42,7 @@ public class SkipItemCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.GREEN + "An operator skipped your item.");
                 ItemManager.markedAsFinished(player, ItemManager.blockMap.get(player.getUniqueId()));
                 ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
-            } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+            } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 List<String> excludedBlocks = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_blocks");
                 excludedBlocks.add(ItemManager.blockMap.get(player.getUniqueId()).name());
                 ForceItemPlugin.getInstance().getConfig().set("excluded_blocks", excludedBlocks);
