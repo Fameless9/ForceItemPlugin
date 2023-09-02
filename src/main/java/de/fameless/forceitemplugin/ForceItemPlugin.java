@@ -34,7 +34,7 @@ public final class ForceItemPlugin extends JavaPlugin {
             if (this.getDescription().getVersion().equals(version)) {
                 getLogger().info("Force Battle Plugin up to date!");
             } else {
-                getLogger().info("There is a new update available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
+                getLogger().severe("There is a new update available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
             }
         });
 
