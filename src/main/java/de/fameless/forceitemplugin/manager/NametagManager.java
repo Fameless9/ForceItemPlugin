@@ -30,13 +30,29 @@ public class NametagManager {
         StringBuilder suffix = new StringBuilder();
         suffix.append(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player));
         if (ChallengeManager.getChallengeType() != null) {
-            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM) && ItemManager.itemMap.get(player.getUniqueId()) != null) {
-                suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Item" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
-                        BossbarManager.formatItemName(ItemManager.itemMap.get(player.getUniqueId()).name()).replace("_", " "));
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
+                if (ItemManager.nextItem(player) == null) {
+                    suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GREEN + "COMPLETE");
+                } else {
+                    suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Item" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                            BossbarManager.formatItemName(ItemManager.itemMap.get(player.getUniqueId()).name()).replace("_", " "));
+                }
             }
-            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK) && ItemManager.blockMap.get(player.getUniqueId()) != null) {
-                suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Block" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
-                        BossbarManager.formatItemName(ItemManager.blockMap.get(player.getUniqueId()).name()).replace("_", " "));
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+                if (ItemManager.nextItem(player) == null) {
+                    suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GREEN + "COMPLETE");
+                } else {
+                    suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Block" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                            BossbarManager.formatItemName(ItemManager.blockMap.get(player.getUniqueId()).name()).replace("_", " "));
+                }
+            }
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+                if (ItemManager.nextMob(player) == null) {
+                    suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GREEN + "COMPLETE");
+                } else {
+                    suffix.append(ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Entity" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                            BossbarManager.formatItemName(ItemManager.entityMap.get(player.getUniqueId()).name()).replace("_", " "));
+                }
             }
         }
         if (TeamManager.getTeam(player) != null) {

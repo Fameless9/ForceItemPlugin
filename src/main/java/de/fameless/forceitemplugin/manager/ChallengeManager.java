@@ -25,7 +25,6 @@ public class ChallengeManager {
                 NametagManager.updateNametag(player);
                 BossbarManager.updateBossbar(player);
             }
-            Timer.setTime(ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration"));
         } else if (challengeType.equals(ChallengeType.FORCE_BLOCK)) {
             Bukkit.broadcastMessage(ChatColor.GOLD + "Challenge Force Block has been selected! Progress reset");
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -34,7 +33,15 @@ public class ChallengeManager {
                 NametagManager.updateNametag(player);
                 BossbarManager.updateBossbar(player);
             }
-            Timer.setTime(ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration"));
+        } else if (challengeType.equals(ChallengeType.FORCE_MOB)) {
+            Bukkit.broadcastMessage(ChatColor.GOLD + "Challenge Force Mob has been selected! Progress reset");
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                ItemManager.resetProgress(player);
+                ItemManager.entityMap.put(player.getUniqueId(), ItemManager.nextMob(player));
+                NametagManager.updateNametag(player);
+                BossbarManager.updateBossbar(player);
+            }
         }
+        Timer.setTime(ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration"));
     }
 }

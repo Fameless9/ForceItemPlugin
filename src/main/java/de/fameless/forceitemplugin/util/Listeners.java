@@ -10,11 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -46,6 +47,13 @@ public class Listeners implements Listener {
                 throw new RuntimeException(e);
             }
         }
+        if (!MobYML.getMobProgressConfig().contains(event.getPlayer().getName())) {
+            try {
+                MobYML.addEntry(event.getPlayer());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         if (!ItemManager.itemMap.containsKey(event.getPlayer().getUniqueId()) && ItemManager.nextItem(event.getPlayer()) != null) {
             ItemManager.itemMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
@@ -73,6 +81,13 @@ public class Listeners implements Listener {
             ForceItemPlugin.getInstance().getConfig().set(event.getPlayer().getName() + ".hasBarrier", true);
             ForceItemPlugin.getInstance().saveConfig();
         }
+
+        if (!ForceItemPlugin.getInstance().getConfig().getBoolean(event.getPlayer().getName() + ".hasSwitch")) {
+            event.getPlayer().getInventory().setItem(7, SwitchItem.getSwitchItem());
+            ForceItemPlugin.getInstance().getConfig().set(event.getPlayer().getName() + ".hasSwitch", true);
+            ForceItemPlugin.getInstance().saveConfig();
+        }
+
         if (!ForceItemPlugin.isUpdated) {
             if (event.getPlayer().isOp()) {
                 event.getPlayer().sendMessage(ChatColor.GRAY + "[ForceBattle] New version is available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
@@ -95,8 +110,8 @@ public class Listeners implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
-        if (ItemManager.nextItem(player) == null) return;
         if (ItemManager.isFinished(player, event.getItem().getItemStack().getType())) return;
+
         if (!event.getItem().getItemStack().getType().equals(ItemManager.itemMap.get(event.getEntity().getUniqueId()))) return;
         ItemManager.markedAsFinished(player, event.getItem().getItemStack().getType());
         Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " found " + BossbarManager.formatItemName(event.getItem().getItemStack().getType().name()).replace("_", " "));
@@ -106,19 +121,26 @@ public class Listeners implements Listener {
         BossbarManager.updateBossbar(player);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.getHand().equals(EquipmentSlot.HAND)) return;
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+        if (event.getAction() != (Action.RIGHT_CLICK_BLOCK) && event.getAction() != (Action.RIGHT_CLICK_AIR)) return;
         if (event.getItem() != null && event.getItem().getItemMeta().equals(skipItem.getItemMeta())) {
             event.setCancelled(true);
             if (ChallengeManager.getChallengeType() == null) {
                 event.getPlayer().sendMessage(ChatColor.RED + "Can't skip item, as no challenge has been selected");
                 return;
             }
-            if (ItemManager.nextItem(event.getPlayer()) == null) {
-                event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as you have finished the challenge already!");
-                return;
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM) || ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+                if (ItemManager.nextItem(event.getPlayer()) == null) {
+                    event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as you have finished the challenge already!");
+                    return;
+                }
+            } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+                if (ItemManager.nextMob(event.getPlayer()) == null) {
+                    event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as you have finished the challenge already!");
+                    return;
+                }
             }
             if (!Timer.isRunning()) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as the challenge hasn't been started.");
@@ -134,9 +156,8 @@ public class Listeners implements Listener {
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), new ItemStack(ItemManager.itemMap.get(event.getPlayer().getUniqueId())));
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.itemMap.get(event.getPlayer().getUniqueId()));
-                String itemName = BossbarManager.formatItemName(ItemManager.itemMap.get(event.getPlayer().getUniqueId()).name());
-                itemName.replace("_", " ");
-                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped " + itemName.replace("_", " "));
+                String itemName = BossbarManager.formatItemName(ItemManager.itemMap.get(event.getPlayer().getUniqueId()).name()).replace("_", " ");
+                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped " + itemName);
                 ItemManager.itemMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
@@ -144,10 +165,17 @@ public class Listeners implements Listener {
                 event.getPlayer().sendMessage(ChatColor.GREEN + "Skipped current item.");
             } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.blockMap.get(event.getPlayer().getUniqueId()));
-                String blockName = BossbarManager.formatItemName(ItemManager.blockMap.get(event.getPlayer().getUniqueId()).name());
-                blockName.replace("_", " ");
-                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped " + blockName.replace("_", " "));
+                String blockName = BossbarManager.formatItemName(ItemManager.blockMap.get(event.getPlayer().getUniqueId()).name()).replace("_", " ");
+                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped " + blockName);
                 ItemManager.blockMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
+                PointsManager.addPoint(event.getPlayer());
+                NametagManager.updateNametag(event.getPlayer());
+                BossbarManager.updateBossbar(event.getPlayer());
+            } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+                ItemManager.markedAsFinished(event.getPlayer(), ItemManager.entityMap.get(event.getPlayer().getUniqueId()));
+                String entityName = BossbarManager.formatItemName(ItemManager.entityMap.get(event.getPlayer().getUniqueId()).name()).replace("_", " ");
+                Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " has skipped " + entityName);
+                ItemManager.entityMap.put(event.getPlayer().getUniqueId(), ItemManager.nextMob(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
                 BossbarManager.updateBossbar(event.getPlayer());
@@ -193,7 +221,6 @@ public class Listeners implements Listener {
         if (!Timer.isRunning()) return;
         Player player = event.getPlayer();
         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
-        if (ItemManager.nextItem(player) == null) return;
 
         Block block = event.getTo().getBlock();
         Block blockBelow = block.getRelative(BlockFace.DOWN);
@@ -213,6 +240,29 @@ public class Listeners implements Listener {
     private boolean isSameBlockType(BlockState blockState, Player player) {
         Material playerBlockType = ItemManager.blockMap.get(player.getUniqueId());
         return blockState.getType() == playerBlockType;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (ChallengeManager.getChallengeType() == null) return;
+        if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) return;
+        if (!Timer.isRunning()) return;
+        if (!(event.getDamager() instanceof Player)) return;
+        Player player = (Player) event.getDamager();
+        if (!event.getEntity().isDead()) {
+            LivingEntity entity = (LivingEntity) event.getEntity();
+            if (!(entity.getHealth() - event.getDamage() <= 0)) return;
+        }
+        if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
+
+        if (event.getEntity().getType().equals(ItemManager.entityMap.get(player.getUniqueId()))) {
+            ItemManager.markedAsFinished(player, event.getEntity().getType());
+            Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " finished " + BossbarManager.formatItemName(ItemManager.entityMap.get(player.getUniqueId()).name()).replace("_", " "));
+            ItemManager.entityMap.put(player.getUniqueId(), ItemManager.nextMob(player));
+            PointsManager.addPoint(player);
+            NametagManager.updateNametag(player);
+            BossbarManager.updateBossbar(player);
+        }
     }
 
     public static ItemStack getSkipItem() {

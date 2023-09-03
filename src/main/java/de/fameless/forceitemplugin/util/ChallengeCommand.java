@@ -5,11 +5,13 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -39,6 +41,8 @@ public class ChallengeCommand implements CommandExecutor, Listener {
             return "Force Item";
         } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
             return "Force Block";
+        } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+            return "Force Mob";
         } else {
             return "No challenge selected.";
         }
@@ -54,6 +58,9 @@ public class ChallengeCommand implements CommandExecutor, Listener {
         inventory.setItem(1, ItemProvider.ItemBuilder(new ItemStack(Material.GRASS_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Block", "", ChatColor.BLUE + "Click to start Force Block.", "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(),
                 "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+        inventory.setItem(2, ItemProvider.ItemBuilder(new ItemStack(Material.DIAMOND_SWORD), ItemProvider.enchantments(Enchantment.KNOCKBACK), 1,
+                ItemProvider.itemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS), ChatColor.GOLD + "Force Mob", "", ChatColor.BLUE +
+                "Click to start Force Mob.", "", ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
         inventory.setItem(8, ItemProvider.ItemBuilder(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Keep Inventory", "", ChatColor.BLUE + "Click to toggle Keep Inventory in all worlds.", "",
                 ChatColor.BLUE + "Currently set to: " + !isKeepInventory));
@@ -68,13 +75,18 @@ public class ChallengeCommand implements CommandExecutor, Listener {
         if (!event.getView().getTitle().endsWith("Challenges")) return;
         event.setCancelled(true);
         if (event.getSlot() == 0) {
-            if (ChallengeManager.getChallengeType() == null || ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+            if (ChallengeManager.getChallengeType() == null || !ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 ChallengeManager.setChallengeType(ChallengeType.FORCE_ITEM);
             }
         }
         if (event.getSlot() == 1) {
-            if (ChallengeManager.getChallengeType() == null || ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
+            if (ChallengeManager.getChallengeType() == null || !ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 ChallengeManager.setChallengeType(ChallengeType.FORCE_BLOCK);
+            }
+        }
+        if (event.getSlot() == 2) {
+            if (ChallengeManager.getChallengeType() == null || !ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+                ChallengeManager.setChallengeType(ChallengeType.FORCE_MOB);
             }
         }
         if (event.getSlot() == 8) {

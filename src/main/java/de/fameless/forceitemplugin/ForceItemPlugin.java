@@ -54,6 +54,11 @@ public final class ForceItemPlugin extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        try {
+            MobYML.setupItemFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         timer = new Timer();
 
@@ -66,6 +71,7 @@ public final class ForceItemPlugin extends JavaPlugin {
         getCommand("menu").setExecutor(challengeCommand);
 
         Bukkit.getPluginManager().registerEvents(new Listeners(),this);
+        Bukkit.getPluginManager().registerEvents(new SwitchItem(),this);
         Bukkit.getPluginManager().registerEvents(challengeCommand, this);
 
         int pluginId = 19683;

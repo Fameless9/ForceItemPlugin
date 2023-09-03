@@ -66,6 +66,20 @@ public class BossbarManager {
                         blockName + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Points" + ChatColor.DARK_GRAY + ": " +
                         ChatColor.GOLD + PointsManager.getPoints(player), BarColor.WHITE, BarStyle.SOLID);
             }
+        } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+            if (ItemManager.nextMob(player) == null) {
+                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has won by killing every entity.");
+                Timer.setRunning(false);
+                LeaderboardManager.displayLeaderboard();
+                bossBar = Bukkit.createBossBar(ChatColor.GREEN.toString() + ChatColor.BOLD + "COMPLETE" + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD +
+                                "Points" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + PointsManager.getPoints(player),
+                        BarColor.RED, BarStyle.SOLID);
+            } else {
+                String entityName = formatItemName(ItemManager.entityMap.get(player.getUniqueId()).name().replace("_", " "));
+                bossBar = Bukkit.createBossBar(ChatColor.GOLD + "Entity" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD +
+                        entityName + ChatColor.DARK_GRAY + " | " + ChatColor.GOLD + "Points" + ChatColor.DARK_GRAY + ": " +
+                        ChatColor.GOLD + PointsManager.getPoints(player), BarColor.WHITE, BarStyle.SOLID);
+            }
         } else {
             bossBar = Bukkit.createBossBar(ChatColor.GOLD + "No challenge selected. /menu", BarColor.WHITE, BarStyle.SOLID);
         }

@@ -6,7 +6,7 @@
 
     <groupId>de.fameless</groupId>
     <artifactId>ForceItemPlugin</artifactId>
-    <version>2.2.0</version>
+    <version>3</version>
     <packaging>jar</packaging>
 
     <name>ForceItemPlugin</name>

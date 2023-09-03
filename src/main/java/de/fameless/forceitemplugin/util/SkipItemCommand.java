@@ -31,11 +31,12 @@ public class SkipItemCommand implements CommandExecutor {
         if (sender instanceof Player) {
             if (Bukkit.getPlayerExact(args[0]) == null) return false;
             Player player = Bukkit.getPlayer(args[0]);
-            if (ItemManager.nextItem(player) == null) {
-                sender.sendMessage(ChatColor.RED + "Player has already collected every item!");
-                return false;
-            }
+
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
+                if (ItemManager.nextItem(player) == null) {
+                    sender.sendMessage(ChatColor.RED + "Player has already collected every item!");
+                    return false;
+                }
                 List<String> excludedItems = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_items");
                 excludedItems.add(ItemManager.itemMap.get(player.getUniqueId()).name());
                 ForceItemPlugin.getInstance().getConfig().set("excluded_items", excludedItems);
@@ -44,6 +45,10 @@ public class SkipItemCommand implements CommandExecutor {
                 ItemManager.markedAsFinished(player, ItemManager.itemMap.get(player.getUniqueId()));
                 ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
             } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+                if (ItemManager.nextItem(player) == null) {
+                    sender.sendMessage(ChatColor.RED + "Player has already collected every item!");
+                    return false;
+                }
                 List<String> excludedBlocks = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_blocks");
                 excludedBlocks.add(ItemManager.blockMap.get(player.getUniqueId()).name());
                 ForceItemPlugin.getInstance().getConfig().set("excluded_blocks", excludedBlocks);
@@ -51,6 +56,18 @@ public class SkipItemCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.GREEN + "An operator skipped your item.");
                 ItemManager.markedAsFinished(player, ItemManager.blockMap.get(player.getUniqueId()));
                 ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
+            } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+                if (ItemManager.nextMob(player) == null) {
+                    sender.sendMessage(ChatColor.RED + "Player has already killed every mob!");
+                    return false;
+                }
+                List<String> excludedMobs = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_mobs");
+                excludedMobs.add(ItemManager.entityMap.get(player.getUniqueId()).name());
+                ForceItemPlugin.getInstance().getConfig().set("excluded_mobs", excludedMobs);
+                ForceItemPlugin.getInstance().saveConfig();
+                player.sendMessage(ChatColor.GREEN + "An operator skipped your mob.");
+                ItemManager.markedAsFinished(player, ItemManager.entityMap.get(player.getUniqueId()));
+                ItemManager.entityMap.put(player.getUniqueId(), ItemManager.nextMob(player));
             }
             NametagManager.updateNametag(player);
             BossbarManager.updateBossbar(player);

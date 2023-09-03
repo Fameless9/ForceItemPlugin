@@ -1,10 +1,8 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.util.BlockYML;
-import de.fameless.forceitemplugin.util.ChallengeType;
-import de.fameless.forceitemplugin.util.ItemYML;
-import de.fameless.forceitemplugin.util.Listeners;
+import de.fameless.forceitemplugin.util.*;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -17,6 +15,7 @@ public class ItemManager {
 
     public static HashMap<UUID, Material> itemMap = new HashMap<>();
     public static HashMap<UUID, Material> blockMap = new HashMap<>();
+    public static HashMap<UUID, EntityType> entityMap = new HashMap<>();
 
     public static void resetProgress(Player player) {
         for (Material material : Material.values()) {
@@ -27,12 +26,19 @@ public class ItemManager {
                 BlockYML.getBlockProgressConfig().set(player.getName() + "." + material.name(), false);
             }
         }
+        for (EntityType type : EntityType.values()) {
+            if (MobYML.getMobProgressConfig().contains(player.getName() + "." + type.name())) {
+                MobYML.getMobProgressConfig().set(player.getName() + "." + type.name(), false);
+            }
+        }
 
         player.getInventory().remove(Listeners.getSkipItem());
         player.getInventory().setItem(8, Listeners.getSkipItem());
+        player.getInventory().setItem(7, SwitchItem.getSwitchItem());
 
         ItemYML.saveItemConfig();
         BlockYML.saveBlockConfig();
+        MobYML.saveMobConfig();
         PointsManager.setPoints(player, 0);
     }
 
@@ -50,12 +56,29 @@ public class ItemManager {
             }
         }
     }
+    public static void markedAsFinished(Player player, EntityType entity) {
+        if (ChallengeManager.getChallengeType() == null) return;
+        if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+            if (MobYML.getMobProgressConfig().contains(player.getName() + "." + entity.name())) {
+                MobYML.getMobProgressConfig().set(player.getName() + "." + entity.name(), true);
+                MobYML.saveMobConfig();
+            }
+        }
+    }
     public static boolean isFinished(Player player, Material material) {
         if (ChallengeManager.getChallengeType() == null) return false;
         if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
             return ItemYML.getItemProgressConfig().getBoolean(player.getName() + "." + material.name());
         } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
             return BlockYML.getBlockProgressConfig().getBoolean(player.getName() + "." + material.name());
+        }
+        return false;
+    }
+
+    public static boolean isFinished(Player player, EntityType type) {
+        if (ChallengeManager.getChallengeType() == null) return false;
+        if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+            return ItemYML.getItemProgressConfig().getBoolean(player.getName() + "." + type.name());
         }
         return false;
     }
@@ -87,6 +110,24 @@ public class ItemManager {
             }
             ThreadLocalRandom random = ThreadLocalRandom.current();
             return blockList.get(random.nextInt(blockList.size()));
+        } else {
+            return null;
+        }
+    }
+    public static EntityType nextMob(Player player) {
+        if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+            List<EntityType> entityList = new ArrayList<>();
+            for (EntityType type : EntityType.values()) {
+                if (!MobYML.getMobProgressConfig().contains(player.getName() + "." + type.name())) continue;
+                if (!MobYML.getMobProgressConfig().getBoolean(player.getName() + "." + type.name())) {
+                    entityList.add(type);
+                }
+            }
+            if (entityList.isEmpty()) {
+                return null;
+            }
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            return entityList.get(random.nextInt(entityList.size()));
         } else {
             return null;
         }
