@@ -1,8 +1,8 @@
 package de.fameless.forceitemplugin.util;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+
 import java.util.HashMap;
 import java.util.UUID;
 

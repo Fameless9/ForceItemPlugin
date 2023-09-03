@@ -2,9 +2,9 @@ package de.fameless.forceitemplugin.util;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

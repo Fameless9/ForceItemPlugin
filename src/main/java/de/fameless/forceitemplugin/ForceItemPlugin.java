@@ -3,14 +3,15 @@ package de.fameless.forceitemplugin;
 import de.fameless.forceitemplugin.bStats.Metrics;
 import de.fameless.forceitemplugin.bStats.UpdateChecker;
 import de.fameless.forceitemplugin.manager.PointsManager;
-import de.fameless.forceitemplugin.team.InviteReactCommand;
 import de.fameless.forceitemplugin.team.TeamBackpack;
 import de.fameless.forceitemplugin.team.TeamCommand;
+import de.fameless.forceitemplugin.team.TeamInviteReactCommand;
 import de.fameless.forceitemplugin.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.IOException;
 import java.time.Duration;
 
@@ -59,7 +60,7 @@ public final class ForceItemPlugin extends JavaPlugin {
         getCommand("timer").setExecutor(timer);
         getCommand("skipitem").setExecutor(new SkipItemCommand());
         getCommand("team").setExecutor(new TeamCommand());
-        getCommand("invite").setExecutor(new InviteReactCommand());
+        getCommand("invite").setExecutor(new TeamInviteReactCommand());
         getCommand("backpack").setExecutor(new TeamBackpack());
         getCommand("exclude").setExecutor(new ExcludeCommand());
         getCommand("menu").setExecutor(challengeCommand);
