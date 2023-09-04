@@ -102,7 +102,7 @@ public class Timer implements CommandExecutor {
                     setTime(getTime() - 1);
                     if (time == 0) {
                         setRunning(false);
-                        setTime(ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration"));
+                        setTime(getStartTime());
                         LeaderboardManager.displayLeaderboard();
                     }
                 }
