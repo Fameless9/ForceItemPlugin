@@ -97,6 +97,8 @@ public final class ForceItemPlugin extends JavaPlugin {
         });
         metrics.addCustomChart(chart);
 
+        Listeners.checkForItem();
+
         if (ChallengeCommand.isKeepInventory) {
             for (World world : Bukkit.getServer().getWorlds()) {
                 world.setGameRule(GameRule.KEEP_INVENTORY, true);

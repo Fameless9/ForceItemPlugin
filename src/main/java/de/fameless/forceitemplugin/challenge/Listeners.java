@@ -22,10 +22,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -270,6 +274,33 @@ public class Listeners implements Listener {
             NametagManager.updateNametag(player);
             BossbarManager.updateBossbar(player);
         }
+    }
+
+    public static void checkForItem() {
+        Runnable runnable = (Runnable) new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (ChallengeManager.getChallengeType() == null) return;
+                if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) return;
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.getInventory().contains(ItemManager.itemMap.get(player.getUniqueId()))) {
+                        Material material = ItemManager.itemMap.get(player.getUniqueId());
+                        if (ChallengeManager.getChallengeType() == null) return;
+                        if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) return;
+                        if (!Timer.isRunning()) return;
+                        if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
+                        if (ItemManager.isFinished(player, material)) return;
+
+                        ItemManager.markedAsFinished(player, material);
+                        Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " found " + BossbarManager.formatItemName(material.name()).replace("_", " "));
+                        ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
+                        PointsManager.addPoint(player);
+                        NametagManager.updateNametag(player);
+                        BossbarManager.updateBossbar(player);
+                    }
+                }
+            }
+        }.runTaskTimer(ForceItemPlugin.getInstance(), 0,1);
     }
 
     public static ItemStack getSkipItem() {
