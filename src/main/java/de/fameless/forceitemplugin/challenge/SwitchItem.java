@@ -1,9 +1,12 @@
-package de.fameless.forceitemplugin.util;
+package de.fameless.forceitemplugin.challenge;
 
+import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.util.ItemProvider;
 import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
 import de.fameless.forceitemplugin.manager.NametagManager;
+import de.fameless.forceitemplugin.timer.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SwitchItem implements Listener {
 
     private static final ItemStack switchItem = ItemProvider.ItemBuilder(new ItemStack(Material.STRUCTURE_VOID, 3), ItemProvider.enchantments(), 0, Collections.emptyList(),
-            ChatColor.BLUE + "Switcher", ChatColor.BLUE + "Rightclick to switch your item/block/mob");
+            ChatColor.BLUE + "Swapper", ChatColor.BLUE + "Rightclick to swap your item/block/mob with another player");
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -35,7 +38,7 @@ public class SwitchItem implements Listener {
             event.setCancelled(true);
 
             if (ChallengeManager.getChallengeType() == null) {
-                event.getPlayer().sendMessage(ChatColor.RED + "Can't skip item, as no challenge has been selected");
+                event.getPlayer().sendMessage(ChatColor.RED + "Can't swap item, as no challenge has been selected");
                 return;
             }
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM) || ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
@@ -49,7 +52,7 @@ public class SwitchItem implements Listener {
                     return;
                 }
             }
-            if (!Timer.isRunning()) {
+            if (!Timer.isRunning() && ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") != -1) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as the challenge hasn't been started.");
                 return;
             }
@@ -81,8 +84,8 @@ public class SwitchItem implements Listener {
                 ItemManager.blockMap.put(player.getUniqueId(), otherItem);
                 ItemManager.blockMap.put(event.getPlayer().getUniqueId(), playerItem);
 
-                player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " switched their block with yours.");
-                event.getPlayer().sendMessage(ChatColor.GOLD + "Your block has was switched with " + player.getName() + "'s.");
+                player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their block with yours.");
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Your block has was swapped with " + player.getName() + "'s.");
 
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());
@@ -115,8 +118,8 @@ public class SwitchItem implements Listener {
                 ItemManager.itemMap.put(player.getUniqueId(), otherItem);
                 ItemManager.itemMap.put(event.getPlayer().getUniqueId(), playerItem);
 
-                player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " switched their item with yours.");
-                event.getPlayer().sendMessage(ChatColor.GOLD + "Your item has was switched with " + player.getName() + "'s.");
+                player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their item with yours.");
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Your item has was swapped with " + player.getName() + "'s.");
 
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());
@@ -149,8 +152,8 @@ public class SwitchItem implements Listener {
                 ItemManager.entityMap.put(player.getUniqueId(), otherMob);
                 ItemManager.entityMap.put(event.getPlayer().getUniqueId(), playerMob);
 
-                player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " switched their mob with yours.");
-                event.getPlayer().sendMessage(ChatColor.GOLD + "Your mob has was switched with " + player.getName() + "'s.");
+                player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their mob with yours.");
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Your mob has was swapped with " + player.getName() + "'s.");
 
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());

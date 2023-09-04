@@ -1,4 +1,4 @@
-package de.fameless.forceitemplugin.util;
+package de.fameless.forceitemplugin.challenge;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

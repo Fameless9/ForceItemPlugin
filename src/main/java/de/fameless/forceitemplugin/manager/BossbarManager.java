@@ -1,7 +1,7 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.util.ChallengeType;
-import de.fameless.forceitemplugin.util.Timer;
+import de.fameless.forceitemplugin.challenge.ChallengeType;
+import de.fameless.forceitemplugin.timer.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;

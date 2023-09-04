@@ -1,4 +1,4 @@
-package de.fameless.forceitemplugin.util;
+package de.fameless.forceitemplugin.challenge;
 
 public enum ChallengeType {
     FORCE_ITEM,

@@ -1,8 +1,7 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
-import de.fameless.forceitemplugin.util.ChallengeType;
-import de.fameless.forceitemplugin.util.Timer;
+import de.fameless.forceitemplugin.challenge.ChallengeType;
+import de.fameless.forceitemplugin.timer.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -17,6 +16,13 @@ public class ChallengeManager {
 
     public static void setChallengeType(ChallengeType type) {
         challengeType = type;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getOpenInventory() != null) {
+                if (player.getOpenInventory().getTitle().endsWith("Timer")) {
+                    player.closeInventory();
+                }
+            }
+        }
         if (challengeType.equals(ChallengeType.FORCE_ITEM)) {
             Bukkit.broadcastMessage(ChatColor.GOLD + "Challenge Force Item has been selected! Progress reset");
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -42,6 +48,6 @@ public class ChallengeManager {
                 BossbarManager.updateBossbar(player);
             }
         }
-        Timer.setTime(ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration"));
+        Timer.setTime(Timer.getStartTime());
     }
 }

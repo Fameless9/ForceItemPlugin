@@ -1,4 +1,4 @@
-package de.fameless.forceitemplugin.util;
+package de.fameless.forceitemplugin.files;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;

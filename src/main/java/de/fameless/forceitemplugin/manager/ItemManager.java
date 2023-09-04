@@ -1,6 +1,11 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.util.*;
+import de.fameless.forceitemplugin.challenge.ChallengeType;
+import de.fameless.forceitemplugin.challenge.Listeners;
+import de.fameless.forceitemplugin.challenge.SwitchItem;
+import de.fameless.forceitemplugin.files.BlockYML;
+import de.fameless.forceitemplugin.files.ItemYML;
+import de.fameless.forceitemplugin.files.MobYML;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package de.fameless.forceitemplugin.util;
+package de.fameless.forceitemplugin.challenge;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
 import de.fameless.forceitemplugin.manager.BossbarManager;

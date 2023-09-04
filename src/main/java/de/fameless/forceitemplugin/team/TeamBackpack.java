@@ -1,7 +1,7 @@
 package de.fameless.forceitemplugin.team;
 
-import de.fameless.forceitemplugin.util.Backpack;
-import de.fameless.forceitemplugin.util.ChallengeCommand;
+import de.fameless.forceitemplugin.challenge.Backpack;
+import de.fameless.forceitemplugin.challenge.ChallengeCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

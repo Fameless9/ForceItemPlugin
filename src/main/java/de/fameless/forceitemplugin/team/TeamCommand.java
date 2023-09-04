@@ -2,7 +2,7 @@ package de.fameless.forceitemplugin.team;
 
 import de.fameless.forceitemplugin.manager.NametagManager;
 import de.fameless.forceitemplugin.manager.PointsManager;
-import de.fameless.forceitemplugin.util.Timer;
+import de.fameless.forceitemplugin.timer.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
