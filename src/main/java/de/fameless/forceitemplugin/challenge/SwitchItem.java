@@ -1,12 +1,12 @@
 package de.fameless.forceitemplugin.challenge;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
-import de.fameless.forceitemplugin.util.ItemProvider;
 import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
 import de.fameless.forceitemplugin.manager.NametagManager;
 import de.fameless.forceitemplugin.timer.Timer;
+import de.fameless.forceitemplugin.util.ItemProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SwitchItem implements Listener {
 
-    private static final ItemStack switchItem = ItemProvider.ItemBuilder(new ItemStack(Material.STRUCTURE_VOID, 3), ItemProvider.enchantments(), 0, Collections.emptyList(),
+    private static final ItemStack switchItem = ItemProvider.ItemBuilder(new ItemStack(Material.STRUCTURE_VOID), ItemProvider.enchantments(), 0, Collections.emptyList(),
             ChatColor.BLUE + "Swapper", ChatColor.BLUE + "Rightclick to swap your item/block/mob with another player");
 
     @EventHandler
@@ -60,11 +60,12 @@ public class SwitchItem implements Listener {
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 List<Player> availablePlayers = new ArrayList<>();
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (event.getPlayer().equals(player)) continue;
                     if (ItemManager.blockMap.get(player.getUniqueId()) != null) {
                         availablePlayers.add(player);
                     }
                 }
-                if (availablePlayers.size() < 2) {
+                if (availablePlayers.isEmpty()) {
                     event.getPlayer().sendMessage(ChatColor.RED + "No players available.");
                     return;
                 }
@@ -85,7 +86,7 @@ public class SwitchItem implements Listener {
                 ItemManager.blockMap.put(event.getPlayer().getUniqueId(), playerItem);
 
                 player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their block with yours.");
-                event.getPlayer().sendMessage(ChatColor.GOLD + "Your block has was swapped with " + player.getName() + "'s.");
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Your block was swapped with " + player.getName() + "'s.");
 
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());
@@ -94,11 +95,12 @@ public class SwitchItem implements Listener {
             } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 List<Player> availablePlayers = new ArrayList<>();
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (event.getPlayer().equals(player)) continue;
                     if (ItemManager.itemMap.get(player.getUniqueId()) != null) {
                         availablePlayers.add(player);
                     }
                 }
-                if (availablePlayers.size() < 2) {
+                if (availablePlayers.isEmpty()) {
                     event.getPlayer().sendMessage(ChatColor.RED + "No players available.");
                     return;
                 }
@@ -119,7 +121,7 @@ public class SwitchItem implements Listener {
                 ItemManager.itemMap.put(event.getPlayer().getUniqueId(), playerItem);
 
                 player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their item with yours.");
-                event.getPlayer().sendMessage(ChatColor.GOLD + "Your item has was swapped with " + player.getName() + "'s.");
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Your item was swapped with " + player.getName() + "'s.");
 
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());
@@ -128,11 +130,12 @@ public class SwitchItem implements Listener {
             } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
                 List<Player> availablePlayers = new ArrayList<>();
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (event.getPlayer().equals(player)) continue;
                     if (ItemManager.entityMap.get(player.getUniqueId()) != null) {
                         availablePlayers.add(player);
                     }
                 }
-                if (availablePlayers.size() < 2) {
+                if (availablePlayers.isEmpty()) {
                     event.getPlayer().sendMessage(ChatColor.RED + "No players available.");
                     return;
                 }
@@ -153,7 +156,7 @@ public class SwitchItem implements Listener {
                 ItemManager.entityMap.put(event.getPlayer().getUniqueId(), playerMob);
 
                 player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their mob with yours.");
-                event.getPlayer().sendMessage(ChatColor.GOLD + "Your mob has was swapped with " + player.getName() + "'s.");
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Your mob was swapped with " + player.getName() + "'s.");
 
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());

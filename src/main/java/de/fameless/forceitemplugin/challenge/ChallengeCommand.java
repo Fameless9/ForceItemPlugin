@@ -1,8 +1,8 @@
 package de.fameless.forceitemplugin.challenge;
 
-import de.fameless.forceitemplugin.util.ItemProvider;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.timer.Timer;
+import de.fameless.forceitemplugin.util.ItemProvider;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

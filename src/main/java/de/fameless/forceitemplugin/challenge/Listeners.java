@@ -2,13 +2,13 @@ package de.fameless.forceitemplugin.challenge;
 
 import de.fameless.forceitemplugin.ForceItemPlugin;
 import de.fameless.forceitemplugin.files.BlockYML;
-import de.fameless.forceitemplugin.util.ItemProvider;
 import de.fameless.forceitemplugin.files.ItemYML;
 import de.fameless.forceitemplugin.files.MobYML;
 import de.fameless.forceitemplugin.manager.*;
 import de.fameless.forceitemplugin.team.Team;
 import de.fameless.forceitemplugin.team.TeamManager;
 import de.fameless.forceitemplugin.timer.Timer;
+import de.fameless.forceitemplugin.util.ItemProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,10 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -42,36 +39,34 @@ public class Listeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(ForceItemPlugin.getInstance(), () -> {
-            if (!ItemYML.getItemProgressConfig().contains(event.getPlayer().getName())) {
-                try {
-                    ItemYML.addEntry(event.getPlayer());
-                } catch (IOException e) {
-                    throw new RuntimeException();
-                }
+        if (!ItemYML.getItemProgressConfig().contains(event.getPlayer().getName())) {
+            try {
+                ItemYML.addEntry(event.getPlayer());
+            } catch (IOException e) {
+                throw new RuntimeException();
             }
-            if (!BlockYML.getBlockProgressConfig().contains(event.getPlayer().getName())) {
-                try {
-                    BlockYML.addEntry(event.getPlayer());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        }
+        if (!BlockYML.getBlockProgressConfig().contains(event.getPlayer().getName())) {
+            try {
+                BlockYML.addEntry(event.getPlayer());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            if (!MobYML.getMobProgressConfig().contains(event.getPlayer().getName())) {
-                try {
-                    MobYML.addEntry(event.getPlayer());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        }
+        if (!MobYML.getMobProgressConfig().contains(event.getPlayer().getName())) {
+            try {
+                MobYML.addEntry(event.getPlayer());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+        }
 
-            if (!ItemManager.itemMap.containsKey(event.getPlayer().getUniqueId()) && ItemManager.nextItem(event.getPlayer()) != null) {
-                ItemManager.itemMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
-            }
-            if (!ItemManager.blockMap.containsKey(event.getPlayer().getUniqueId()) && ItemManager.nextItem(event.getPlayer()) != null) {
-                ItemManager.blockMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
-            }
-        });
+        if (!ItemManager.itemMap.containsKey(event.getPlayer().getUniqueId()) && ItemManager.nextItem(event.getPlayer()) != null) {
+            ItemManager.itemMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
+        }
+        if (!ItemManager.blockMap.containsKey(event.getPlayer().getUniqueId()) && ItemManager.nextItem(event.getPlayer()) != null) {
+            ItemManager.blockMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
+        }
 
         BossbarManager.createBossbar(event.getPlayer());
 
@@ -277,7 +272,7 @@ public class Listeners implements Listener {
     }
 
     public static void checkForItem() {
-        Runnable runnable = (Runnable) new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 if (ChallengeManager.getChallengeType() == null) return;

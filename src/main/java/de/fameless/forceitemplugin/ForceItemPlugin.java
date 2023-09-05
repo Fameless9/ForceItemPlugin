@@ -20,16 +20,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.concurrent.Callable;
 
 public final class ForceItemPlugin extends JavaPlugin {
 
     private static ForceItemPlugin instance;
 
-    private ChallengeCommand challengeCommand;
-    private Timer timer;
     public static boolean isUpdated = true;
-    private UpdateChecker updateChecker = new UpdateChecker(112328, Duration.ofHours(2));
+    private final UpdateChecker updateChecker = new UpdateChecker(112328, Duration.ofHours(2));
 
     @Override
     public void onEnable() {
@@ -37,7 +34,6 @@ public final class ForceItemPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         instance = this;
-        challengeCommand = new ChallengeCommand();
 
         updateChecker.checkForUpdates();
 
@@ -46,28 +42,17 @@ public final class ForceItemPlugin extends JavaPlugin {
         }
 
         try {
+            MobYML.setupItemFile();
             PointsManager.setupPoints();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
-
-        try {
             ItemYML.setupItemFile();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
-        try {
             BlockYML.setupItemFile();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            MobYML.setupItemFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            getLogger().severe("Couldn't setup files. Shutting down.");
+            Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        timer = new Timer();
+        Timer timer = new Timer();
+        ChallengeCommand challengeCommand = new ChallengeCommand();
 
         getCommand("timer").setExecutor(timer);
         getCommand("skipitem").setExecutor(new SkipItemCommand());
