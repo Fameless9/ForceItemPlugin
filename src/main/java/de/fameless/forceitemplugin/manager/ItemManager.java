@@ -45,6 +45,26 @@ public class ItemManager {
         BlockYML.saveBlockConfig();
         MobYML.saveMobConfig();
         PointsManager.setPoints(player, 0);
+
+        if (ChallengeManager.getChallengeType() != null) {
+            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+                entityMap.put(player.getUniqueId(), nextMob(player));
+                BossbarManager.updateBossbar(player);
+                NametagManager.updateNametag(player);
+                return;
+            } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
+                itemMap.put(player.getUniqueId(), nextItem(player));
+                BossbarManager.updateBossbar(player);
+                NametagManager.updateNametag(player);
+                return;
+            } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+                blockMap.put(player.getUniqueId(), nextItem(player));
+                BossbarManager.updateBossbar(player);
+                NametagManager.updateNametag(player);
+            }
+        }
+        BossbarManager.updateBossbar(player);
+        NametagManager.updateNametag(player);
     }
 
     public static void markedAsFinished(Player player, Material item) {

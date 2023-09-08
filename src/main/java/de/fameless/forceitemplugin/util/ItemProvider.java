@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ItemProvider {
 
-    public static ItemStack ItemBuilder(ItemStack item, List<Enchantment> enchantments, int level, List<ItemFlag> itemFlags, String name, String ...lore) {
+    public static ItemStack buildItem(ItemStack item, List<Enchantment> enchantments, int level, List<ItemFlag> itemFlags, String name, String ...lore) {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
 

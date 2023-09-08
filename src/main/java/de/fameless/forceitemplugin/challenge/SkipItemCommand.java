@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.challenge;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
@@ -19,8 +19,8 @@ public class SkipItemCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
 
-        if (!sender.hasPermission("forceitem.skip")) {
-            sender.sendMessage(ChatColor.RED + "Lacking permission: 'forceitem.skip'");
+        if (!sender.hasPermission("forcebattle.skip")) {
+            sender.sendMessage(ChatColor.RED + "Lacking permission: 'forcebattle.skip'");
             return false;
         }
         if (ChallengeManager.getChallengeType() == null) {
@@ -37,10 +37,10 @@ public class SkipItemCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "Player has already collected every item!");
                     return false;
                 }
-                List<String> excludedItems = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_items");
+                List<String> excludedItems = ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_items");
                 excludedItems.add(ItemManager.itemMap.get(player.getUniqueId()).name());
-                ForceItemPlugin.getInstance().getConfig().set("excluded_items", excludedItems);
-                ForceItemPlugin.getInstance().saveConfig();
+                ForceBattlePlugin.getInstance().getConfig().set("excluded_items", excludedItems);
+                ForceBattlePlugin.getInstance().saveConfig();
                 player.sendMessage(ChatColor.GREEN + "An operator skipped your item.");
                 ItemManager.markedAsFinished(player, ItemManager.itemMap.get(player.getUniqueId()));
                 ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
@@ -49,10 +49,10 @@ public class SkipItemCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "Player has already collected every item!");
                     return false;
                 }
-                List<String> excludedBlocks = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_blocks");
+                List<String> excludedBlocks = ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_blocks");
                 excludedBlocks.add(ItemManager.blockMap.get(player.getUniqueId()).name());
-                ForceItemPlugin.getInstance().getConfig().set("excluded_blocks", excludedBlocks);
-                ForceItemPlugin.getInstance().saveConfig();
+                ForceBattlePlugin.getInstance().getConfig().set("excluded_blocks", excludedBlocks);
+                ForceBattlePlugin.getInstance().saveConfig();
                 player.sendMessage(ChatColor.GREEN + "An operator skipped your item.");
                 ItemManager.markedAsFinished(player, ItemManager.blockMap.get(player.getUniqueId()));
                 ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
@@ -61,10 +61,10 @@ public class SkipItemCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "Player has already killed every mob!");
                     return false;
                 }
-                List<String> excludedMobs = ForceItemPlugin.getInstance().getConfig().getStringList("excluded_mobs");
+                List<String> excludedMobs = ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_mobs");
                 excludedMobs.add(ItemManager.entityMap.get(player.getUniqueId()).name());
-                ForceItemPlugin.getInstance().getConfig().set("excluded_mobs", excludedMobs);
-                ForceItemPlugin.getInstance().saveConfig();
+                ForceBattlePlugin.getInstance().getConfig().set("excluded_mobs", excludedMobs);
+                ForceBattlePlugin.getInstance().saveConfig();
                 player.sendMessage(ChatColor.GREEN + "An operator skipped your mob.");
                 ItemManager.markedAsFinished(player, ItemManager.entityMap.get(player.getUniqueId()));
                 ItemManager.entityMap.put(player.getUniqueId(), ItemManager.nextMob(player));

@@ -21,9 +21,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.time.Duration;
 
-public final class ForceItemPlugin extends JavaPlugin {
+public final class ForceBattlePlugin extends JavaPlugin {
 
-    private static ForceItemPlugin instance;
+    private static ForceBattlePlugin instance;
 
     public static boolean isUpdated = true;
     private final UpdateChecker updateChecker = new UpdateChecker(112328, Duration.ofHours(2));
@@ -46,6 +46,7 @@ public final class ForceItemPlugin extends JavaPlugin {
             PointsManager.setupPoints();
             ItemYML.setupItemFile();
             BlockYML.setupItemFile();
+            //MessagesYML.setupMessageFile();
         } catch (IOException e) {
             getLogger().severe("Couldn't setup files. Shutting down.");
             Bukkit.getPluginManager().disablePlugin(this);
@@ -53,6 +54,8 @@ public final class ForceItemPlugin extends JavaPlugin {
 
         Timer timer = new Timer();
         ChallengeCommand challengeCommand = new ChallengeCommand();
+        ResetUI resetUI = new ResetUI();
+        PointsUI pointsUI = new PointsUI();
 
         getCommand("timer").setExecutor(timer);
         getCommand("skipitem").setExecutor(new SkipItemCommand());
@@ -61,14 +64,17 @@ public final class ForceItemPlugin extends JavaPlugin {
         getCommand("backpack").setExecutor(new TeamBackpack());
         getCommand("exclude").setExecutor(new ExcludeCommand());
         getCommand("menu").setExecutor(challengeCommand);
+        getCommand("reset").setExecutor(resetUI);
+        getCommand("points").setExecutor(pointsUI);
 
         Bukkit.getPluginManager().registerEvents(new Listeners(),this);
         Bukkit.getPluginManager().registerEvents(new SwitchItem(),this);
         Bukkit.getPluginManager().registerEvents(new TimerUI(), this);
+        Bukkit.getPluginManager().registerEvents(resetUI, this);
         Bukkit.getPluginManager().registerEvents(challengeCommand, this);
+        Bukkit.getPluginManager().registerEvents(pointsUI, this);
 
-        int pluginId = 19683;
-        Metrics metrics = new Metrics(this, pluginId);
+        Metrics metrics = new Metrics(this, 19683);
         Metrics.CustomChart chart = new Metrics.SimplePie("challenge", () -> {
            if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                return "Force Item";
@@ -91,7 +97,7 @@ public final class ForceItemPlugin extends JavaPlugin {
         }
     }
 
-    public static ForceItemPlugin getInstance() {
+    public static ForceBattlePlugin getInstance() {
         return instance;
     }
 }

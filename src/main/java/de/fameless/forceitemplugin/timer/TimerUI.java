@@ -17,7 +17,7 @@ public class TimerUI implements Listener {
 
     public static Inventory getTimerUI() {
         Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Timer");
-        inventory.setItem(4, ItemProvider.ItemBuilder(new ItemStack(Material.CLOCK), Collections.emptyList(), 0, Collections.emptyList(),
+        inventory.setItem(4, ItemProvider.buildItem(new ItemStack(Material.CLOCK), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Timer", "", ChatColor.GOLD + "Rightclick to add 1 Minute",
                 ChatColor.GOLD + "Shift + Rightclick to add 1 Hour","", ChatColor.GOLD + "Leftclick to subtract 1 Minute",
                 ChatColor.GOLD + "Shift + Leftclick to subtract 1 Hour", "", ChatColor.GOLD + "Mouse Wheel to toggle the timer"));

@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.files;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class MobYML {
     private static YamlConfiguration configuration;
 
     public static void setupItemFile() throws IOException {
-        file = new File(ForceItemPlugin.getInstance().getDataFolder(), "mobprogress.yml");
+        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "mobprogress.yml");
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -28,7 +28,7 @@ public class MobYML {
         List<EntityType> mobs = new ArrayList<>();
         List<EntityType> excludedMobs = new ArrayList<>();
 
-        for (String s : ForceItemPlugin.getInstance().getConfig().getStringList("excluded_mobs")) {
+        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_mobs")) {
             if (EntityType.valueOf(s) != null ) {
                 excludedMobs.add(EntityType.valueOf(s));
             }

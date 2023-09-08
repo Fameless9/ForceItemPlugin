@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.bStats;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
@@ -24,7 +24,7 @@ public class UpdateChecker {
     }
 
     public void checkForUpdates() {
-        Bukkit.getScheduler().runTaskAsynchronously(ForceItemPlugin.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(ForceBattlePlugin.getInstance(), () -> {
             Instant currentTime = Instant.now();
             if (Duration.between(lastCheckTime, currentTime).compareTo(checkInterval) < 0) {
                 return;
@@ -36,14 +36,14 @@ public class UpdateChecker {
                 connection.setRequestMethod("GET");
                 String latestVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
 
-                String currentVersion = ForceItemPlugin.getInstance().getDescription().getVersion();
+                String currentVersion = ForceBattlePlugin.getInstance().getDescription().getVersion();
                 if (latestVersion != null && !latestVersion.equalsIgnoreCase(currentVersion)) {
                     Bukkit.getLogger().info("[Force Battle Plugin] A new update is available! Version " + latestVersion + " can be downloaded from the SpigotMC website: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
-                    ForceItemPlugin.isUpdated = false;
+                    ForceBattlePlugin.isUpdated = false;
                 }
                 lastCheckTime = currentTime;
             } catch (IOException e) {
-                ForceItemPlugin.getInstance().getLogger().log(Level.WARNING, "Failed to check for updates: " + e.getMessage(), e);
+                ForceBattlePlugin.getInstance().getLogger().log(Level.WARNING, "Failed to check for updates: " + e.getMessage(), e);
             }
         });
     }

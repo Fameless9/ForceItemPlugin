@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.timer;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.LeaderboardManager;
 import net.md_5.bungee.api.ChatMessageType;
@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Timer implements CommandExecutor {
 
     public Timer() {
-        if (ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
+        if (ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
             setRunning(false);
         }
         run();
@@ -35,8 +35,8 @@ public class Timer implements CommandExecutor {
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (!player.hasPermission("forceitem.timer")) {
-                player.sendMessage(ChatColor.RED + "Lacking permission: 'forceitem.timer'");
+            if (!player.hasPermission("forcebattle.timer")) {
+                player.sendMessage(ChatColor.RED + "Lacking permission: 'forcebattle.timer'");
                 return false;
             }
             if (args.length >= 1) {
@@ -69,7 +69,7 @@ public class Timer implements CommandExecutor {
         return false;
     }
 
-    private static int startTime = ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration");
+    private static int startTime = ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration");
     private static int time;
     private static boolean running;
 
@@ -104,7 +104,7 @@ public class Timer implements CommandExecutor {
                     }
                 }
             }
-        }.runTaskTimer(ForceItemPlugin.getInstance(),0,20);
+        }.runTaskTimer(ForceBattlePlugin.getInstance(),0,20);
     }
 
     public static void sendActionbar() {
@@ -115,7 +115,7 @@ public class Timer implements CommandExecutor {
             int minutes = time / 60 % 60;
             int seconds = time % 60;
             StringBuilder message = new StringBuilder();
-            if (ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
+            if (ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
                 message.append("Infinite Time");
             } else {
                 if (days >= 1) {
@@ -143,7 +143,7 @@ public class Timer implements CommandExecutor {
             player.sendMessage(ChatColor.GOLD + "You need to select a challenge to start the timer. /menu");
             return;
         }
-        if (ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
+        if (ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
             player.sendMessage(ChatColor.RED + "Time is set to infinite.");
             return;
         }

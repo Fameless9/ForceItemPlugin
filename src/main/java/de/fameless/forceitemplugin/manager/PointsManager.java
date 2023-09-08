@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.team.Team;
 import de.fameless.forceitemplugin.team.TeamManager;
 import org.bukkit.Bukkit;
@@ -17,7 +17,7 @@ public class PointsManager {
     private static YamlConfiguration configuration;
 
     public static void setupPoints() throws IOException {
-        file = new File(ForceItemPlugin.getInstance().getDataFolder(), "points.yml");
+        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "points.yml");
         if (!file.exists()) {
             file.createNewFile();
         }

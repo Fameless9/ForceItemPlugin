@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.challenge;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.files.BlockYML;
 import de.fameless.forceitemplugin.files.ItemYML;
 import de.fameless.forceitemplugin.files.MobYML;
@@ -34,7 +34,7 @@ import java.util.UUID;
 
 public class Listeners implements Listener {
 
-    private static final ItemStack skipItem = ItemProvider.ItemBuilder(new ItemStack(Material.BARRIER, 3), ItemProvider.enchantments(), 0, Collections.emptyList(),
+    private static final ItemStack skipItem = ItemProvider.buildItem(new ItemStack(Material.BARRIER, 3), ItemProvider.enchantments(), 0, Collections.emptyList(),
             ChatColor.RED + "Joker", ChatColor.BLUE + "Rightclick on a block to skip your item/block");
 
     @EventHandler(ignoreCancelled = true)
@@ -82,19 +82,19 @@ public class Listeners implements Listener {
         event.getPlayer().setResourcePack("https://drive.usercontent.google.com/download?id=1K5On0YGYJlknv9p2Wgdz9qGyrChWn8fl&export=download&authuser=1&confirm=t&uuid=b67aa88a-90e7-42ad-ab70-deaa2eea4f9e&at=APZUnTVJb5KuZWw3nzyYMd434CfL:1693104909215");
         event.setJoinMessage(ChatColor.YELLOW + event.getPlayer().getName() + " joined the game");
 
-        if (!ForceItemPlugin.getInstance().getConfig().getBoolean(event.getPlayer().getName() + ".hasBarrier")) {
+        if (!ForceBattlePlugin.getInstance().getConfig().getBoolean(event.getPlayer().getName() + ".hasBarrier")) {
             event.getPlayer().getInventory().setItem(8, skipItem);
-            ForceItemPlugin.getInstance().getConfig().set(event.getPlayer().getName() + ".hasBarrier", true);
-            ForceItemPlugin.getInstance().saveConfig();
+            ForceBattlePlugin.getInstance().getConfig().set(event.getPlayer().getName() + ".hasBarrier", true);
+            ForceBattlePlugin.getInstance().saveConfig();
         }
 
-        if (!ForceItemPlugin.getInstance().getConfig().getBoolean(event.getPlayer().getName() + ".hasSwitch")) {
+        if (!ForceBattlePlugin.getInstance().getConfig().getBoolean(event.getPlayer().getName() + ".hasSwitch")) {
             event.getPlayer().getInventory().setItem(7, SwitchItem.getSwitchItem());
-            ForceItemPlugin.getInstance().getConfig().set(event.getPlayer().getName() + ".hasSwitch", true);
-            ForceItemPlugin.getInstance().saveConfig();
+            ForceBattlePlugin.getInstance().getConfig().set(event.getPlayer().getName() + ".hasSwitch", true);
+            ForceBattlePlugin.getInstance().saveConfig();
         }
 
-        if (!ForceItemPlugin.isUpdated) {
+        if (!ForceBattlePlugin.isUpdated) {
             if (event.getPlayer().isOp()) {
                 event.getPlayer().sendMessage(ChatColor.GRAY + "[ForceBattle] New version is available: https://www.spigotmc.org/resources/1-20-x-24-7-support-force-item-battle-force-block-battle.112328/");
             }
@@ -134,7 +134,7 @@ public class Listeners implements Listener {
         if (event.getItem() != null && event.getItem().getItemMeta().equals(skipItem.getItemMeta())) {
             event.setCancelled(true);
             if (ChallengeManager.getChallengeType() == null) {
-                event.getPlayer().sendMessage(ChatColor.RED + "Can't skip item, as no challenge has been selected");
+                event.getPlayer().sendMessage(ChatColor.RED + "Can't skip item, as no challenge has been selected.");
                 return;
             }
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM) || ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
@@ -148,7 +148,7 @@ public class Listeners implements Listener {
                     return;
                 }
             }
-            if (!Timer.isRunning() && ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") != -1) {
+            if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as the challenge hasn't been started.");
                 return;
             }
@@ -213,7 +213,7 @@ public class Listeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
-        if (event.getPlayer().hasPermission("forceitem.changegm")) return;
+        if (!event.getPlayer().hasPermission("forcebattle.changegm")) return;
         if (ExcludeCommand.excludedPlayers.contains(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Can't change gamemode while excluded.");
@@ -224,7 +224,7 @@ public class Listeners implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         if (ChallengeManager.getChallengeType() == null) return;
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) return;
-        if (!Timer.isRunning() && ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") != -1) return;
+        if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1) return;
         Player player = event.getPlayer();
         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
 
@@ -252,7 +252,7 @@ public class Listeners implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (ChallengeManager.getChallengeType() == null) return;
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) return;
-        if (!Timer.isRunning() && ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") != -1) return;
+        if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1) return;
         if (!(event.getDamager() instanceof Player)) return;
         Player player = (Player) event.getDamager();
         if (!event.getEntity().isDead()) {
@@ -277,12 +277,11 @@ public class Listeners implements Listener {
             public void run() {
                 if (ChallengeManager.getChallengeType() == null) return;
                 if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) return;
+                if (!Timer.isRunning()) return;
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (ItemManager.itemMap.get(player.getUniqueId()) == null) continue;
                     if (player.getInventory().contains(ItemManager.itemMap.get(player.getUniqueId()))) {
                         Material material = ItemManager.itemMap.get(player.getUniqueId());
-                        if (ChallengeManager.getChallengeType() == null) return;
-                        if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) return;
-                        if (!Timer.isRunning()) return;
                         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
                         if (ItemManager.isFinished(player, material)) return;
 
@@ -295,7 +294,7 @@ public class Listeners implements Listener {
                     }
                 }
             }
-        }.runTaskTimer(ForceItemPlugin.getInstance(), 0,1);
+        }.runTaskTimer(ForceBattlePlugin.getInstance(), 0,1);
     }
 
     public static ItemStack getSkipItem() {

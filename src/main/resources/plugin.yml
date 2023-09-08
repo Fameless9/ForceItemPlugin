@@ -1,6 +1,6 @@
-name: ForceItemPlugin
-version: '3.1.1'
-main: de.fameless.forceitemplugin.ForceItemPlugin
+name: ForceBattlePlugin
+version: '4.0.0'
+main: de.fameless.forceitemplugin.ForceBattlePlugin
 api-version: '1.20'
 author: fameless9
 commands:
@@ -15,3 +15,5 @@ commands:
       - bp
   exclude:
   menu:
+  reset:
+  points:

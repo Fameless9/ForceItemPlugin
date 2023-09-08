@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.challenge;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -27,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SwitchItem implements Listener {
 
-    private static final ItemStack switchItem = ItemProvider.ItemBuilder(new ItemStack(Material.STRUCTURE_VOID), ItemProvider.enchantments(), 0, Collections.emptyList(),
+    private static final ItemStack switchItem = ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), ItemProvider.enchantments(), 0, Collections.emptyList(),
             ChatColor.BLUE + "Swapper", ChatColor.BLUE + "Rightclick to swap your item/block/mob with another player");
 
     @EventHandler
@@ -38,7 +39,7 @@ public class SwitchItem implements Listener {
             event.setCancelled(true);
 
             if (ChallengeManager.getChallengeType() == null) {
-                event.getPlayer().sendMessage(ChatColor.RED + "Can't swap item, as no challenge has been selected");
+                event.getPlayer().sendMessage(ChatColor.RED + "Can't swap item, as no challenge has been selected.");
                 return;
             }
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM) || ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
@@ -52,7 +53,7 @@ public class SwitchItem implements Listener {
                     return;
                 }
             }
-            if (!Timer.isRunning() && ForceItemPlugin.getInstance().getConfig().getInt("challenge_duration") != -1) {
+            if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as the challenge hasn't been started.");
                 return;
             }
@@ -87,6 +88,12 @@ public class SwitchItem implements Listener {
 
                 player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their block with yours.");
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Your block was swapped with " + player.getName() + "'s.");
+
+                for (Player player1 : Bukkit.getOnlinePlayers()) {
+                    if (player1 != player && player1 != event.getPlayer()) {
+                        player1.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their item with " + player.getName() + ".");
+                    }
+                }
 
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());
@@ -123,6 +130,12 @@ public class SwitchItem implements Listener {
                 player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their item with yours.");
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Your item was swapped with " + player.getName() + "'s.");
 
+                for (Player player1 : Bukkit.getOnlinePlayers()) {
+                    if (player1 != player && player1 != event.getPlayer()) {
+                        player1.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their item with " + player.getName() + ".");
+                    }
+                }
+
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());
                 BossbarManager.updateBossbar(player);
@@ -158,11 +171,24 @@ public class SwitchItem implements Listener {
                 player.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their mob with yours.");
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Your mob was swapped with " + player.getName() + "'s.");
 
+                for (Player player1 : Bukkit.getOnlinePlayers()) {
+                    if (player1 != player && player1 != event.getPlayer()) {
+                        player1.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their item with " + player.getName() + ".");
+                    }
+                }
+
                 NametagManager.updateNametag(player);
                 NametagManager.updateNametag(event.getPlayer());
                 BossbarManager.updateBossbar(player);
                 BossbarManager.updateBossbar(event.getPlayer());
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if (event.getItemDrop().getItemStack().getItemMeta().equals(switchItem.getItemMeta())) {
+            event.setCancelled(true);
         }
     }
 

@@ -1,6 +1,6 @@
 package de.fameless.forceitemplugin.files;
 
-import de.fameless.forceitemplugin.ForceItemPlugin;
+import de.fameless.forceitemplugin.ForceBattlePlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class ItemYML {
     private static YamlConfiguration configuration;
 
     public static void setupItemFile() throws IOException {
-        file = new File(ForceItemPlugin.getInstance().getDataFolder(), "itemprogress.yml");
+        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "itemprogress.yml");
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -28,13 +28,13 @@ public class ItemYML {
         List<Material> materials = new ArrayList<>();
         List<Material> excludedMaterials = new ArrayList<>();
 
-        for (String s : ForceItemPlugin.getInstance().getConfig().getStringList("excluded_items")) {
+        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_items")) {
             if (Material.getMaterial(s) != null ) {
                 excludedMaterials.add(Material.getMaterial(s));
             }
         }
 
-        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_spawn_eggs")) {
+        if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_spawn_eggs")) {
             for (Material material : Material.values()) {
                 if (material.name().endsWith("SPAWN_EGG")) {
                     excludedMaterials.add(material);
@@ -42,7 +42,7 @@ public class ItemYML {
             }
         }
 
-        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_music_discs")) {
+        if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_music_discs")) {
             for (Material material : Material.values()) {
                 if (material.name().contains("DISC")) {
                     excludedMaterials.add(material);
@@ -50,7 +50,7 @@ public class ItemYML {
             }
         }
 
-        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_banner_patterns")) {
+        if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banner_patterns")) {
             for (Material material : Material.values()) {
                 if (material.name().endsWith("BANNER_PATTERN")) {
                     excludedMaterials.add(material);
@@ -58,7 +58,7 @@ public class ItemYML {
             }
         }
 
-        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
+        if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
             for (Material material : Material.values()) {
                 if (material.name().endsWith("BANNER")) {
                     excludedMaterials.add(material);
@@ -66,7 +66,7 @@ public class ItemYML {
             }
         }
 
-        if (ForceItemPlugin.getInstance().getConfig().getBoolean("exclude_armor_templates")) {
+        if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_armor_templates")) {
             for (Material material : Material.values()) {
                 if (material.name().endsWith("TEMPLATE")) {
                     excludedMaterials.add(material);

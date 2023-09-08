@@ -24,13 +24,13 @@ public class ChallengeCommand implements CommandExecutor, Listener {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
 
         if (commandSender instanceof Player) {
-            if (Timer.isRunning()) {
-                commandSender.sendMessage(ChatColor.GOLD + "Can't change challenge while timer is running.");
+            if (!commandSender.hasPermission("forcebattle.menu")) {
+                commandSender.sendMessage(ChatColor.RED + "Lacking permission: 'forcebattle.menu'");
                 return false;
             }
             ((Player) commandSender).openInventory(getInventory());
         } else {
-            commandSender.sendMessage(ChatColor.RED + "Only players may use this command!");
+            commandSender.sendMessage(ChatColor.RED + "Only players can use this command!");
         }
         return false;
     }
@@ -54,19 +54,19 @@ public class ChallengeCommand implements CommandExecutor, Listener {
 
     public static Inventory getInventory() {
         Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Challenges");
-        inventory.setItem(0, ItemProvider.ItemBuilder(new ItemStack(Material.ITEM_FRAME), Collections.emptyList(),0, Collections.emptyList(),
+        inventory.setItem(0, ItemProvider.buildItem(new ItemStack(Material.ITEM_FRAME), Collections.emptyList(),0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Item", "", ChatColor.BLUE + "Click to start Force Item.", "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(),
                 "", ChatColor.GRAY + "Progress from current challenge will be reset."));
-        inventory.setItem(1, ItemProvider.ItemBuilder(new ItemStack(Material.GRASS_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
+        inventory.setItem(1, ItemProvider.buildItem(new ItemStack(Material.GRASS_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Block", "", ChatColor.BLUE + "Click to start Force Block.", "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(),
                 "", ChatColor.GRAY + "Progress from current challenge will be reset."));
-        inventory.setItem(2, ItemProvider.ItemBuilder(new ItemStack(Material.DIAMOND_SWORD), ItemProvider.enchantments(Enchantment.KNOCKBACK), 1,
+        inventory.setItem(2, ItemProvider.buildItem(new ItemStack(Material.DIAMOND_SWORD), ItemProvider.enchantments(Enchantment.KNOCKBACK), 1,
                 ItemProvider.itemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS), ChatColor.GOLD + "Force Mob", "", ChatColor.BLUE +
                 "Click to start Force Mob.", "", ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
-        inventory.setItem(8, ItemProvider.ItemBuilder(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
+        inventory.setItem(8, ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Keep Inventory", "", ChatColor.BLUE + "Click to toggle Keep Inventory in all worlds.", "",
                 ChatColor.BLUE + "Currently set to: " + !isKeepInventory));
-        inventory.setItem(7, ItemProvider.ItemBuilder(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
+        inventory.setItem(7, ItemProvider.buildItem(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "",
                 ChatColor.BLUE + "Currently set to: " + isBackpackEnabled));
         return inventory;
@@ -77,16 +77,28 @@ public class ChallengeCommand implements CommandExecutor, Listener {
         if (!event.getView().getTitle().endsWith("Challenges")) return;
         event.setCancelled(true);
         if (event.getSlot() == 0) {
+            if (Timer.isRunning()) {
+                event.getWhoClicked().sendMessage(ChatColor.GOLD + "Can't change challenge while timer is running.");
+                return;
+            }
             if (ChallengeManager.getChallengeType() == null || !ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 ChallengeManager.setChallengeType(ChallengeType.FORCE_ITEM);
             }
         }
         if (event.getSlot() == 1) {
+            if (Timer.isRunning()) {
+                event.getWhoClicked().sendMessage(ChatColor.GOLD + "Can't change challenge while timer is running.");
+                return;
+            }
             if (ChallengeManager.getChallengeType() == null || !ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 ChallengeManager.setChallengeType(ChallengeType.FORCE_BLOCK);
             }
         }
         if (event.getSlot() == 2) {
+            if (Timer.isRunning()) {
+                event.getWhoClicked().sendMessage(ChatColor.GOLD + "Can't change challenge while timer is running.");
+                return;
+            }
             if (ChallengeManager.getChallengeType() == null || !ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
                 ChallengeManager.setChallengeType(ChallengeType.FORCE_MOB);
             }
@@ -95,7 +107,7 @@ public class ChallengeCommand implements CommandExecutor, Listener {
             for (World world : Bukkit.getServer().getWorlds()) {
                 if (world != null) {
                     world.setGameRule(GameRule.KEEP_INVENTORY, isKeepInventory);
-                    event.getWhoClicked().sendMessage(ChatColor.GOLD + "KeepInventory has been set to " + isKeepInventory + " for world: " + world.getName());
+                    event.getWhoClicked().sendMessage(ChatColor.GOLD + "Keep Inventory has been set to " + isKeepInventory + " for world: " + world.getName());
                 }
             }
             Bukkit.broadcastMessage(ChatColor.GOLD + "Keep Inventory has been set to " + isKeepInventory);

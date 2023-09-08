@@ -28,7 +28,7 @@ public class NametagManager {
             return;
         }
         StringBuilder suffix = new StringBuilder();
-        suffix.append(" " + ChatColor.GOLD + "Points: " + PointsManager.getPoints(player));
+        suffix.append(" " + ChatColor.GOLD + "Points" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + PointsManager.getPoints(player));
         if (ChallengeManager.getChallengeType() != null) {
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                 if (ItemManager.nextItem(player) == null) {
