@@ -83,10 +83,9 @@ public class Listeners implements Listener {
                         PointsManager.addPoint(player);
                         NametagManager.updateNametag(player);
                         BossbarManager.updateBossbar(player);
-                    } else if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ADVANCEMENT)) {
+                    } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ADVANCEMENT)) {
                         if (ItemManager.advancementMap.get(player.getUniqueId()) == null) continue;
-                        if (!hasAdvancement(player, ItemManager.advancementMap.get(player.getUniqueId()).getKey().toString()))
-                            continue;
+                        if (!hasAdvancement(player, ItemManager.advancementMap.get(player.getUniqueId()).getKey().toString())) continue;
 
                         Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " finished " + ItemManager.advancementMap.get(player.getUniqueId()).name);
                         ItemManager.markedAsFinished(player, ItemManager.advancementMap.get(player.getUniqueId()));
