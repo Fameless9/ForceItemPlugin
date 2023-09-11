@@ -90,9 +90,11 @@ public class Listeners implements Listener {
                         Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " finished " + ItemManager.advancementMap.get(player.getUniqueId()).name);
                         ItemManager.markedAsFinished(player, ItemManager.advancementMap.get(player.getUniqueId()));
                         ItemManager.advancementMap.put(player.getUniqueId(), ItemManager.nextAdvancement(player));
-                        player.sendMessage(ChatColor.DARK_GRAY + "---------------------");
-                        player.sendMessage(ChatColor.GOLD + "Advancement Description:\n" + ItemManager.advancementMap.get(player.getUniqueId()).description);
-                        player.sendMessage(ChatColor.DARK_GRAY + "---------------------");
+                        if (ItemManager.nextAdvancement(player) != null) {
+                            player.sendMessage(ChatColor.DARK_GRAY + "---------------------");
+                            player.sendMessage(ChatColor.GOLD + "Advancement Description:\n" + ItemManager.advancementMap.get(player.getUniqueId()).description);
+                            player.sendMessage(ChatColor.DARK_GRAY + "---------------------");
+                        }
                         PointsManager.addPoint(player);
                         NametagManager.updateNametag(player);
                         BossbarManager.updateBossbar(player);
