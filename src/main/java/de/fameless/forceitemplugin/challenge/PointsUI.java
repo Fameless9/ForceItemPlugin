@@ -29,24 +29,25 @@ public class PointsUI implements CommandExecutor, Listener {
     public static Inventory getPointsUI(Player target) {
         Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Manage Points");
         inventory.setItem(0, ItemProvider.buildItem(new ItemStack(Material.GOLD_NUGGET), Collections.emptyList(), 0, Collections.emptyList(),
-                ChatColor.GOLD + "Adjust Points", "", ChatColor.GOLD + target.getName() + " currently has " + PointsManager.getPoints(target) + " point(s).",
-                "", ChatColor.GOLD + "Leftclick to add 1 point", "", ChatColor.GOLD + "Rightclick to" + " subtract 1 point"));
+                ChatColor.GOLD + "Adjust Points", "", ChatColor.GOLD + target.getName() + " currently has " +
+                        PointsManager.getPoints(target) + " point(s).", "", ChatColor.GOLD + "Leftclick to add 1 point", "", ChatColor.GOLD + "Rightclick to subtract 1 point"));
         return inventory;
     }
 
-    @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
+
         if (!commandSender.hasPermission("forcebattle.points")) {
             commandSender.sendMessage(ChatColor.RED + "Lacking permission: 'forcebattle.points'");
             return false;
         }
+
         if (commandSender instanceof Player) {
             if (args.length == 1) {
                 if (Bukkit.getPlayerExact(args[0]) != null) {
                     Player target = Bukkit.getPlayer(args[0]);
                     Player player = (Player) commandSender;
                     player.openInventory(getPointsUI(target));
-                    commandMap.put(player.getUniqueId(), target.getUniqueId());
+                    PointsUI.commandMap.put(player.getUniqueId(), target.getUniqueId());
                 } else {
                     commandSender.sendMessage(ChatColor.RED + "Player couldn't be found.");
                 }
@@ -61,11 +62,15 @@ public class PointsUI implements CommandExecutor, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!event.getView().getTitle().endsWith("Manage Points")) return;
+
+        if (!event.getView().getTitle().endsWith("Manage Points")) {
+            return;
+        }
         event.setCancelled(true);
+
         if (event.getSlot() == 0) {
-            if (Bukkit.getPlayer(commandMap.get(event.getWhoClicked().getUniqueId())) != null) {
-                Player target = Bukkit.getPlayer(commandMap.get(event.getWhoClicked().getUniqueId()));
+            if (Bukkit.getPlayer(PointsUI.commandMap.get(event.getWhoClicked().getUniqueId())) != null) {
+                Player target = Bukkit.getPlayer(PointsUI.commandMap.get(event.getWhoClicked().getUniqueId()));
                 if (event.getClick().equals(ClickType.LEFT)) {
                     PointsManager.setPoints(target, PointsManager.getPoints(target) + 1);
                     NametagManager.updateNametag(target);
@@ -83,7 +88,7 @@ public class PointsUI implements CommandExecutor, Listener {
                     }
                     event.getWhoClicked().openInventory(getPointsUI(target));
                 } else if (event.getClick().equals(ClickType.RIGHT)) {
-                    if ((PointsManager.getPoints(target) - 1) < 0) {
+                    if (PointsManager.getPoints(target) - 1 < 0) {
                         event.getWhoClicked().sendMessage(ChatColor.RED + "Can't go below 0 points.");
                         return;
                     }

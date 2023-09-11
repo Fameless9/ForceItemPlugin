@@ -16,33 +16,36 @@ import java.util.List;
 import java.util.UUID;
 
 public class TeamCommand implements CommandExecutor {
+    public static HashMap<UUID, Team> inviteMap;
 
-    public static HashMap<UUID, Team> inviteMap = new HashMap<>();
+    static {
+        TeamCommand.inviteMap = new HashMap<UUID, Team>();
+    }
 
-    @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (args.length >= 1) {
-                switch (args[0]) {
-                    case "create":
+                String s2 = args[0];
+                switch (s2) {
+                    case "create": {
                         if (Timer.isRunning()) {
                             player.sendMessage(ChatColor.RED + "Can't do that, as the challenge has already started.");
                             return false;
                         }
-                        List<UUID> players = new ArrayList<>();
+                        List<UUID> players = new ArrayList<UUID>();
                         players.add(player.getUniqueId());
                         if (TeamManager.getTeam(player) == null) {
                             TeamManager.createTeam(players);
                             TeamManager.getTeam(player).setPoints(PointsManager.getPoints(player));
                             player.sendMessage(ChatColor.GREEN + "New team has been created.");
                             NametagManager.updateNametag(player);
-                        } else {
-                            player.sendMessage(ChatColor.RED + "You are already in a team!");
+                            break;
                         }
+                        player.sendMessage(ChatColor.RED + "You are already in a team!");
                         break;
-                    case "invite":
+                    }
+                    case "invite": {
                         if (Timer.isRunning()) {
                             player.sendMessage(ChatColor.RED + "Can't do that, as the challenge has already started.");
                             return false;
@@ -60,12 +63,12 @@ public class TeamCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.RED + "This player is already in a team.");
                             return false;
                         }
-                        inviteMap.put(target.getUniqueId(), TeamManager.getTeam(player));
+                        TeamCommand.inviteMap.put(target.getUniqueId(), TeamManager.getTeam(player));
                         player.sendMessage(ChatColor.GREEN + "You invited " + target.getName() + " to your team.");
-                        target.sendMessage(ChatColor.AQUA + "You have been invited to a team.\n" +
-                                "Use /invite accept it, or /invite decline to decline it.");
+                        target.sendMessage(ChatColor.AQUA + "You have been invited to a team.\nUse /invite accept to accept it, or /invite decline to decline it.");
                         break;
-                    case "kick":
+                    }
+                    case "kick": {
                         if (Timer.isRunning()) {
                             player.sendMessage(ChatColor.RED + "Can't do that, as the challenge has already started.");
                             return false;
@@ -78,33 +81,35 @@ public class TeamCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.RED + "Player couldn't be found!");
                             return false;
                         }
-                        Player target1 = Bukkit.getPlayerExact(args[1]);
-                        if (!TeamManager.getTeam(player).getPlayers().contains(target1.getUniqueId())) {
+                        Player target2 = Bukkit.getPlayerExact(args[1]);
+                        if (!TeamManager.getTeam(player).getPlayers().contains(target2.getUniqueId())) {
                             player.sendMessage(ChatColor.RED + "This player is not part of your team.");
                             return false;
                         }
-                        TeamManager.getTeam(player).removePlayer(target1);
+                        TeamManager.getTeam(player).removePlayer(target2);
                         player.sendMessage(ChatColor.GREEN + "Player has been kicked from your team.");
-                        target1.sendMessage(ChatColor.RED + "You have been kicked from your team.");
-                        NametagManager.updateNametag(target1);
+                        target2.sendMessage(ChatColor.RED + "You have been kicked from your team.");
+                        NametagManager.updateNametag(target2);
                         break;
-                    case "list":
+                    }
+                    case "list": {
                         StringBuilder builder = new StringBuilder();
                         for (Team team : TeamManager.teamMap.values()) {
-                            StringBuilder builder1 = new StringBuilder();
+                            StringBuilder builder2 = new StringBuilder();
                             for (UUID uuid : team.getPlayers()) {
                                 if (Bukkit.getPlayer(uuid) != null) {
                                     Player player2 = Bukkit.getPlayer(uuid);
-                                    builder1.append(player2.getName()).append(", ");
+                                    builder2.append(player2.getName()).append(", ");
                                 }
                             }
-                            if (builder1.length() > 0) {
-                                builder.append(ChatColor.AQUA + "ID: " + team.getId() + ": " + builder1 + "\n");
+                            if (builder2.length() > 0) {
+                                builder.append(ChatColor.AQUA + "ID: " + team.getId() + ": " + builder2 + "\n");
                             }
                         }
                         sender.sendMessage(ChatColor.AQUA + "Teams:\n" + builder);
                         break;
-                    case "delete":
+                    }
+                    case "delete": {
                         if (Timer.isRunning()) {
                             player.sendMessage(ChatColor.RED + "Can't do that, as the challenge has already started.");
                             return false;
@@ -113,22 +118,24 @@ public class TeamCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.RED + "You are not currently in a team!");
                             return false;
                         }
-                        Team team = TeamManager.getTeam(player);
-                        for (UUID playerId : team.getPlayers()) {
-                            for (Player player1 : Bukkit.getOnlinePlayers()) {
-                                if (playerId.equals(player1.getUniqueId())) {
-                                    player1.sendMessage(ChatColor.RED + "Your team has been deleted.");
+                        Team team2 = TeamManager.getTeam(player);
+                        for (UUID playerId : team2.getPlayers()) {
+                            for (Player player3 : Bukkit.getOnlinePlayers()) {
+                                if (playerId.equals(player3.getUniqueId())) {
+                                    player3.sendMessage(ChatColor.RED + "Your team has been deleted.");
                                 }
                             }
                         }
-                        TeamManager.deleteTeam(team.getId());
-                        for (Player player1 : Bukkit.getOnlinePlayers()) {
-                            NametagManager.updateNametag(player1);
+                        TeamManager.deleteTeam(team2.getId());
+                        for (Player player4 : Bukkit.getOnlinePlayers()) {
+                            NametagManager.updateNametag(player4);
                         }
                         break;
-                    default:
+                    }
+                    default: {
                         sender.sendMessage(ChatColor.RED + "Usage: /team <delete/list/create/invite/kick> <player>");
                         break;
+                    }
                 }
             } else {
                 sender.sendMessage(ChatColor.RED + "Usage: /team <delete/list/create/invite/kick> <player>");

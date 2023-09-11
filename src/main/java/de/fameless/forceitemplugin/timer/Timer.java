@@ -14,67 +14,28 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Timer implements CommandExecutor {
+    private static int startTime;
+    private static int time;
+    private static boolean running;
+
+    static {
+        Timer.startTime = ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration");
+    }
 
     public Timer() {
-        if (ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
-            setRunning(false);
-        }
         run();
     }
 
     public static int getStartTime() {
-        return startTime;
+        return Timer.startTime;
     }
 
     public static void setStartTime(int startTime) {
         Timer.startTime = startTime;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if (!player.hasPermission("forcebattle.timer")) {
-                player.sendMessage(ChatColor.RED + "Lacking permission: 'forcebattle.timer'");
-                return false;
-            }
-            if (args.length >= 1) {
-                switch (args[0]){
-                    case "toggle":
-                        toggle(player);
-                        break;
-                    case "set":
-                        if (args.length == 2) {
-                            try {
-                                int time = Integer.parseInt(args[1]);
-                                setTime(time);
-                                setStartTime(time);
-                                player.sendMessage(ChatColor.GOLD + "Timer has been set to " + time + " seconds.");
-                                sendActionbar();
-                            } catch (NumberFormatException e) {
-                                player.sendMessage(ChatColor.RED + "Time value must be an integer.");
-                            }
-                        } else {
-                            player.sendMessage(ChatColor.RED + "Usage: /timer set <time>");
-                        }
-                        break;
-                    default:
-                        sender.sendMessage(ChatColor.RED + "Invalid usage! Please use: /timer toggle");
-                }
-            } else {
-                player.openInventory(TimerUI.getTimerUI());
-            }
-        }
-        return false;
-    }
-
-    private static int startTime = ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration");
-    private static int time;
-    private static boolean running;
-
     public static int getTime() {
-        return time;
+        return Timer.time;
     }
 
     public static void setTime(int time) {
@@ -82,7 +43,7 @@ public class Timer implements CommandExecutor {
     }
 
     public static boolean isRunning() {
-        return running;
+        return Timer.running;
     }
 
     public static void setRunning(boolean running) {
@@ -90,30 +51,39 @@ public class Timer implements CommandExecutor {
     }
 
     public static void run() {
-        setTime(startTime);
+        if (ForceBattlePlugin.getInstance().getConfig().get("time") != null) {
+            setStartTime(ForceBattlePlugin.getInstance().getConfig().getInt("time"));
+        } else if (ForceBattlePlugin.getInstance().getConfig().getBoolean("count_up")) {
+            setStartTime(0);
+        } else {
+            setStartTime(ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration"));
+        }
+        setTime(Timer.startTime);
         new BukkitRunnable() {
-            @Override
             public void run() {
-                sendActionbar();
-                if (isRunning()) {
-                    setTime(getTime() - 1);
-                    if (time == 0) {
-                        setRunning(false);
-                        setTime(getStartTime());
+                Timer.sendActionbar();
+                if (ForceBattlePlugin.getInstance().getConfig().getBoolean("count_up")) {
+                    if (Timer.isRunning()) {
+                        Timer.setTime(Timer.getTime() + 1);
+                    }
+                } else if (Timer.isRunning()) {
+                    Timer.setTime(Timer.getTime() - 1);
+                    if (Timer.time == 0) {
+                        Timer.setRunning(false);
+                        Timer.setTime(Timer.getStartTime());
                         LeaderboardManager.displayLeaderboard();
                     }
                 }
             }
-        }.runTaskTimer(ForceBattlePlugin.getInstance(),0,20);
+        }.runTaskTimer(ForceBattlePlugin.getInstance(), 0L, 20L);
     }
 
     public static void sendActionbar() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-
-            int days = time / 86400;
-            int hours = time / 3600 % 24;
-            int minutes = time / 60 % 60;
-            int seconds = time % 60;
+            int days = Timer.time / 86400;
+            int hours = Timer.time / 3600 % 24;
+            int minutes = Timer.time / 60 % 60;
+            int seconds = Timer.time % 60;
             StringBuilder message = new StringBuilder();
             if (ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
                 message.append("Infinite Time");
@@ -130,14 +100,18 @@ public class Timer implements CommandExecutor {
                 if (seconds >= 1) {
                     message.append(seconds).append("s ");
                 }
+                if (getTime() == 0) {
+                    message.append("0s");
+                }
             }
             if (!isRunning()) {
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.GOLD.toString() + ChatColor.ITALIC + message));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GOLD.toString() + ChatColor.ITALIC + message));
             } else {
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.GOLD.toString() + message));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GOLD.toString() + message));
             }
         }
     }
+
     public static void toggle(Player player) {
         if (ChallengeManager.getChallengeType() == null) {
             player.sendMessage(ChatColor.GOLD + "You need to select a challenge to start the timer. /menu");
@@ -150,17 +124,57 @@ public class Timer implements CommandExecutor {
         if (isRunning()) {
             setRunning(false);
             for (Player players : Bukkit.getOnlinePlayers()) {
-                players.sendTitle(ChatColor.RED + "Timer paused.","",20,40,20);
+                players.sendTitle(ChatColor.RED + "Timer paused.", "", 20, 40, 20);
             }
-            Bukkit.broadcastMessage(ChatColor.RED + "Timer has been paused.\n" + ChatColor.GOLD +
-                    "You can't collect any more items!");
-        }else {
+            Bukkit.broadcastMessage(ChatColor.RED + "Timer has been paused.\n" + ChatColor.GOLD + "You can't collect any more items!");
+        } else {
             setRunning(true);
             for (Player players : Bukkit.getOnlinePlayers()) {
-                players.sendTitle(ChatColor.RED + "Timer started.","",20,40,20);
+                players.sendTitle(ChatColor.RED + "Timer started.", "", 20, 40, 20);
             }
-            Bukkit.broadcastMessage(ChatColor.GREEN + "Timer has been started.\n" + ChatColor.GOLD +
-                    "You can now start collecting your items!");
+            Bukkit.broadcastMessage(ChatColor.GREEN + "Timer has been started.\n" + ChatColor.GOLD + "You can now start collecting your items!");
         }
+    }
+
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (!player.hasPermission("forcebattle.timer")) {
+                player.sendMessage(ChatColor.RED + "Lacking permission: 'forcebattle.timer'");
+                return false;
+            }
+            if (args.length >= 1) {
+                String s2 = args[0];
+                switch (s2) {
+                    case "toggle": {
+                        toggle(player);
+                        break;
+                    }
+                    case "set": {
+                        if (args.length == 2) {
+                            try {
+                                int time = Integer.parseInt(args[1]);
+                                setTime(time);
+                                setStartTime(time);
+                                player.sendMessage(ChatColor.GOLD + "Timer has been set to " + time + " seconds.");
+                                sendActionbar();
+                            } catch (NumberFormatException e) {
+                                player.sendMessage(ChatColor.RED + "Time value must be an integer.");
+                            }
+                            break;
+                        }
+                        player.sendMessage(ChatColor.RED + "Usage: /timer set <time>");
+                        break;
+                    }
+                    default: {
+                        sender.sendMessage(ChatColor.RED + "Invalid usage! Please use: /timer toggle");
+                        break;
+                    }
+                }
+            } else {
+                player.openInventory(TimerUI.getTimerUI());
+            }
+        }
+        return false;
     }
 }

@@ -22,7 +22,6 @@ public class ExcludeCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-
         if (!commandSender.hasPermission("forcebattle.exclude")) {
             commandSender.sendMessage(ChatColor.RED + "Lacking permission: 'forcebattle.exclude'");
             return false;
@@ -31,16 +30,16 @@ public class ExcludeCommand implements CommandExecutor {
             for (String s : args) {
                 if (Bukkit.getPlayerExact(s) != null) {
                     Player target = Bukkit.getPlayer(s);
-                    if (excludedPlayers.contains(target.getUniqueId())) {
-                        excludedPlayers.remove(target.getUniqueId());
+                    if (ExcludeCommand.excludedPlayers.contains(target.getUniqueId())) {
+                        ExcludeCommand.excludedPlayers.remove(target.getUniqueId());
                         if (commandSender.getName().equals(target.getName())) {
                             commandSender.sendMessage(ChatColor.GREEN + "You have been removed from excluded players.");
                         } else {
                             commandSender.sendMessage(ChatColor.GREEN + "Player " + target.getName() + " has been removed from excluded players.");
                             target.sendMessage(ChatColor.GOLD + commandSender.getName() + " has removed you from excluded players.");
                         }
-                        target.setGameMode(gameModeHashMap.get(target.getUniqueId()));
-                        gameModeHashMap.remove(target.getUniqueId());
+                        target.setGameMode(ExcludeCommand.gameModeHashMap.get(target.getUniqueId()));
+                        ExcludeCommand.gameModeHashMap.remove(target.getUniqueId());
                         NametagManager.updateNametag(target);
                         BossbarManager.updateBossbar(target);
                     } else {
@@ -50,9 +49,10 @@ public class ExcludeCommand implements CommandExecutor {
                             commandSender.sendMessage(ChatColor.GREEN + "Player " + target.getName() + " has been added to excluded players.");
                             target.sendMessage(ChatColor.GOLD + commandSender.getName() + " has added you to excluded players.");
                         }
-                        gameModeHashMap.put(target.getUniqueId(), target.getGameMode());
+
+                        ExcludeCommand.gameModeHashMap.put(target.getUniqueId(), target.getGameMode());
                         target.setGameMode(GameMode.SPECTATOR);
-                        excludedPlayers.add(target.getUniqueId());
+                        ExcludeCommand.excludedPlayers.add(target.getUniqueId());
                         NametagManager.updateNametag(target);
                         BossbarManager.removeBossbar(target);
                     }

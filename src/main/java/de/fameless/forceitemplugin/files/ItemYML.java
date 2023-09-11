@@ -16,20 +16,18 @@ public class ItemYML {
     private static YamlConfiguration configuration;
 
     public static void setupItemFile() throws IOException {
-        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "itemprogress.yml");
-        if (!file.exists()) {
-            file.createNewFile();
+        ItemYML.file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "itemprogress.yml");
+        if (!ItemYML.file.exists()) {
+            ItemYML.file.createNewFile();
         }
-        configuration = YamlConfiguration.loadConfiguration(file);
+        ItemYML.configuration = YamlConfiguration.loadConfiguration(ItemYML.file);
     }
 
     public static void addEntry(Player player) throws IOException {
-
-        List<Material> materials = new ArrayList<>();
-        List<Material> excludedMaterials = new ArrayList<>();
-
+        List<Material> materials = new ArrayList<Material>();
+        List<Material> excludedMaterials = new ArrayList<Material>();
         for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_items")) {
-            if (Material.getMaterial(s) != null ) {
+            if (Material.getMaterial(s) != null) {
                 excludedMaterials.add(Material.getMaterial(s));
             }
         }
@@ -129,21 +127,24 @@ public class ItemYML {
         }
 
         for (Material material : Material.values()) {
-            if (excludedMaterials.contains(material)) continue;
-            materials.add(material);
+            if (!excludedMaterials.contains(material)) {
+                materials.add(material);
+            }
         }
 
-        for (Material material : materials) {
-            configuration.set(player.getName() + "." + material.toString(), false);
-            configuration.save(file);
+        for (Material material2 : materials) {
+            ItemYML.configuration.set(player.getName() + "." + material2.toString(), false);
+            ItemYML.configuration.save(ItemYML.file);
         }
     }
+
     public static YamlConfiguration getItemProgressConfig() {
-        return configuration;
+        return ItemYML.configuration;
     }
+
     public static void saveItemConfig() {
         try {
-            configuration.save(file);
+            ItemYML.configuration.save(ItemYML.file);
         } catch (IOException e) {
             throw new RuntimeException();
         }

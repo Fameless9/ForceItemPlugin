@@ -1,19 +1,26 @@
 # adjust challenge duration (seconds)
-# set to -1 to set the time to infinite (players can only win by collecting every item and challenge starts on server startup)
+# set count_up to true for infinite time. If count_up = true, challenge duration will be ignored.
+count_up: false
 challenge_duration: 5400
 leaderboard_message: false
 
 # unobtainable items in creative are excluded by default
-# important: after adding/removing an item from excluded blocks, you need to delete the itemprogress.yml and restart your server
+# important: after adding/removing an item from any excluded ítems list, you need to delete all the progress yml files and restart your server
 exclude_spawn_eggs: true # unobtainable in survival
 exclude_music_discs: true # obtainable in survival
 exclude_banner_patterns: true # obtainable in survival
 exclude_banners: true # obtainable in survival
 exclude_armor_templates: true # obtainable in survival
 excluded_items:
+  - WATER
+  - DECORATED_POT
+  - POWDER_SNOW
   - CHAIN_COMMAND_BLOCK
+  - WATER_CAULDRON
+  - LAVA_CAULDRON
   - COMMAND_BLOCK_MINECART
   - COMMAND_BLOCK
+  - POWDER_SNOW_CAULDRON
   - REPEATING_COMMAND_BLOCK
   - BEDROCK
   - AIR
@@ -46,7 +53,6 @@ excluded_items:
   - BUNDLE
   - FARMLAND
   - STRUCTURE_BLOCK
-  - LAVA_CAULDRON
   - BUBBLE_COLUMN
   - CAVE_AIR
   - KNOWLEDGE_BOOK
@@ -105,3 +111,6 @@ excluded_mobs:
   - ENDER_CRYSTAL
   - SPLASH_POTION
   - ITEM_FRAME
+excluded_biomes:
+  - THE_VOID
+excluded_advancements:

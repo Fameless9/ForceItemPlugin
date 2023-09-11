@@ -16,15 +16,14 @@ public class BlockYML {
     private static YamlConfiguration configuration;
 
     public static void setupItemFile() throws IOException {
-        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "blockprogress.yml");
-        if (!file.exists()) {
-            file.createNewFile();
+        BlockYML.file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "blockprogress.yml");
+        if (!BlockYML.file.exists()) {
+            BlockYML.file.createNewFile();
         }
-        configuration = YamlConfiguration.loadConfiguration(file);
+        BlockYML.configuration = YamlConfiguration.loadConfiguration(BlockYML.file);
     }
 
     public static void addEntry(Player player) throws IOException {
-
         List<Material> materials = new ArrayList<>();
         List<Material> excludedMaterials = new ArrayList<>();
 
@@ -129,24 +128,26 @@ public class BlockYML {
         }
 
         for (Material material : Material.values()) {
-            if (!material.isSolid()) continue;
-            if (excludedMaterials.contains(material)) continue;
-            materials.add(material);
+            if (material.isSolid()) {
+                if (!excludedMaterials.contains(material)) {
+                    materials.add(material);
+                }
+            }
         }
 
-        for (Material material : materials) {
-            configuration.set(player.getName() + "." + material.name(), false);
+        for (Material material2 : materials) {
+            BlockYML.configuration.set(player.getName() + "." + material2.name(), false);
             saveBlockConfig();
         }
     }
 
-    public static YamlConfiguration getBlockProgressConfig () {
-        return configuration;
+    public static YamlConfiguration getBlockProgressConfig() {
+        return BlockYML.configuration;
     }
 
     public static void saveBlockConfig() {
         try {
-            configuration.save(file);
+            BlockYML.configuration.save(BlockYML.file);
         } catch (IOException e) {
             throw new RuntimeException();
         }

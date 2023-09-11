@@ -12,22 +12,21 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class PointsManager {
-
     private static File file;
     private static YamlConfiguration configuration;
 
     public static void setupPoints() throws IOException {
-        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "points.yml");
-        if (!file.exists()) {
-            file.createNewFile();
+        PointsManager.file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "points.yml");
+        if (!PointsManager.file.exists()) {
+            PointsManager.file.createNewFile();
         }
-        configuration = YamlConfiguration.loadConfiguration(file);
+        PointsManager.configuration = YamlConfiguration.loadConfiguration(PointsManager.file);
     }
 
     public static void setPoints(Player player, int points) {
-        configuration.set(player.getName(), points);
+        PointsManager.configuration.set(player.getName(), points);
         try {
-            configuration.save(file);
+            PointsManager.configuration.save(PointsManager.file);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,9 +40,9 @@ public class PointsManager {
             team.setPoints(newPoints);
             for (UUID uuid : team.getPlayers()) {
                 if (Bukkit.getPlayer(uuid) != null) {
-                    configuration.set(Bukkit.getPlayer(uuid).getName(), newPoints);
+                    PointsManager.configuration.set(Bukkit.getPlayer(uuid).getName(), newPoints);
                     try {
-                        configuration.save(file);
+                        PointsManager.configuration.save(PointsManager.file);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -53,10 +52,10 @@ public class PointsManager {
                 }
             }
         } else {
-            configuration.set(player.getName(), newPoints);
+            PointsManager.configuration.set(player.getName(), newPoints);
             try {
-                configuration.save(file);
-            } catch (IOException e) {
+                PointsManager.configuration.save(PointsManager.file);
+            } catch (IOException e2) {
                 throw new RuntimeException();
             }
             LeaderboardManager.adjustPoints(player);
@@ -64,8 +63,8 @@ public class PointsManager {
     }
 
     public static int getPoints(Player player) {
-        if (configuration.contains(player.getName())) {
-            return configuration.getInt(player.getName());
+        if (PointsManager.configuration.contains(player.getName())) {
+            return PointsManager.configuration.getInt(player.getName());
         }
         return 0;
     }

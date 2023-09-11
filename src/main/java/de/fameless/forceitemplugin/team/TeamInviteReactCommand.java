@@ -13,10 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class TeamInviteReactCommand implements CommandExecutor {
-
-    @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-
         if (args.length != 1) {
             sender.sendMessage(ChatColor.RED + "Usage: /invite <accept/decline>.");
             return false;
@@ -25,34 +22,39 @@ public class TeamInviteReactCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (TeamCommand.inviteMap.containsKey(player.getUniqueId())) {
                 Team team = TeamCommand.inviteMap.get(player.getUniqueId());
-                switch (args[0]) {
-                    case "accept":
+                String s2 = args[0];
+                switch (s2) {
+                    case "accept": {
                         team.addPlayer(player);
                         PointsManager.setPoints(player, team.getPoints());
                         NametagManager.updateNametag(player);
                         BossbarManager.updateBossbar(player);
                         for (UUID playerId : team.getPlayers()) {
                             if (Bukkit.getPlayer(playerId) != null) {
-                                Player player1 = Bukkit.getPlayer(playerId);
-                                if (player1 != player) {
-                                    player1.sendMessage(ChatColor.GREEN + player.getName() + " has joined your team.");
+                                Player player2 = Bukkit.getPlayer(playerId);
+                                if (player2 == player) {
+                                    continue;
                                 }
+                                player2.sendMessage(ChatColor.GREEN + player.getName() + " has joined your team.");
                             }
                         }
                         break;
-                    case "decline":
+                    }
+                    case "decline": {
                         TeamCommand.inviteMap.remove(player.getUniqueId());
                         for (UUID playerId : team.getPlayers()) {
                             if (Bukkit.getPlayer(playerId) != null) {
-                                Player player1 = Bukkit.getPlayer(playerId);
+                                Player player2 = Bukkit.getPlayer(playerId);
                                 player.sendMessage(ChatColor.GREEN + "You have declined the invite.");
-                                player1.sendMessage(ChatColor.GREEN + player.getName() + " has declined your invite.");
+                                player2.sendMessage(ChatColor.GREEN + player.getName() + " has declined your invite.");
                             }
                         }
                         break;
-                    default:
+                    }
+                    default: {
                         sender.sendMessage(ChatColor.RED + "Usage: /invite <accept/decline>.");
                         break;
+                    }
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "You haven't been invited to a team.");

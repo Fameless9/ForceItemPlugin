@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ItemProvider {
 
-    public static ItemStack buildItem(ItemStack item, List<Enchantment> enchantments, int level, List<ItemFlag> itemFlags, String name, String ...lore) {
+    public static ItemStack buildItem(ItemStack item, List<Enchantment> enchantments, int level, List<ItemFlag> itemFlags, String name, String... lore) {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
 
@@ -31,12 +31,14 @@ public class ItemProvider {
         item.setItemMeta(meta);
         return item;
     }
-    public static List<Enchantment> enchantments(Enchantment ...enchantments) {
+
+    public static List<Enchantment> enchantments(Enchantment... enchantments) {
         List<Enchantment> list = new ArrayList<>();
         Collections.addAll(list, enchantments);
         return list;
     }
-    public static List<ItemFlag> itemFlags(ItemFlag ...itemFlags) {
+
+    public static List<ItemFlag> itemFlags(ItemFlag... itemFlags) {
         List<ItemFlag> list = new ArrayList<>();
         Collections.addAll(list, itemFlags);
         return list;

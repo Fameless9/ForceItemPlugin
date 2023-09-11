@@ -16,44 +16,45 @@ public class MobYML {
     private static YamlConfiguration configuration;
 
     public static void setupItemFile() throws IOException {
-        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "mobprogress.yml");
-        if (!file.exists()) {
-            file.createNewFile();
+        MobYML.file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "mobprogress.yml");
+        if (!MobYML.file.exists()) {
+            MobYML.file.createNewFile();
         }
-        configuration = YamlConfiguration.loadConfiguration(file);
+        MobYML.configuration = YamlConfiguration.loadConfiguration(MobYML.file);
     }
 
     public static void addEntry(Player player) throws IOException {
-
-        List<EntityType> mobs = new ArrayList<>();
-        List<EntityType> excludedMobs = new ArrayList<>();
-
+        List<EntityType> mobs = new ArrayList<EntityType>();
+        List<EntityType> excludedMobs = new ArrayList<EntityType>();
         for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_mobs")) {
-            if (EntityType.valueOf(s) != null ) {
-                excludedMobs.add(EntityType.valueOf(s));
+            for (EntityType entityType : EntityType.values()) {
+                if (entityType.equals(EntityType.valueOf(s))) {
+                    excludedMobs.add(EntityType.valueOf(s));
+                }
             }
         }
-
         for (EntityType entity : EntityType.values()) {
-            if (entity.equals(EntityType.ENDER_DRAGON)) continue;
-            if (entity.equals(EntityType.PLAYER)) continue;
-            if (excludedMobs.contains(entity)) continue;
-            mobs.add(entity);
+            if (!entity.equals(EntityType.ENDER_DRAGON)) {
+                if (!entity.equals(EntityType.PLAYER)) {
+                    if (!excludedMobs.contains(entity)) {
+                        mobs.add(entity);
+                    }
+                }
+            }
         }
-
-        for (EntityType entity : mobs) {
-            configuration.set(player.getName() + "." + entity.name(), false);
+        for (EntityType entity2 : mobs) {
+            MobYML.configuration.set(player.getName() + "." + entity2.name(), false);
             saveMobConfig();
         }
     }
 
     public static YamlConfiguration getMobProgressConfig() {
-        return configuration;
+        return MobYML.configuration;
     }
 
     public static void saveMobConfig() {
         try {
-            configuration.save(file);
+            MobYML.configuration.save(MobYML.file);
         } catch (IOException e) {
             throw new RuntimeException();
         }
