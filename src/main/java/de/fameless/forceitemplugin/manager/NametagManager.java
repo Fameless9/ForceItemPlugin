@@ -6,9 +6,12 @@ import de.fameless.forceitemplugin.team.TeamManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.scoreboard.Team;
 
-public class NametagManager {
+public class NametagManager implements Listener {
     public static void setupNametag(Player player) {
         getNametag(player);
     }
@@ -76,6 +79,7 @@ public class NametagManager {
     }
 
     public static void removeTag(Player player) {
+        Bukkit.getScoreboardManager().getMainScoreboard().getTeam(player.getUniqueId().toString()).unregister();
         for (Player target : Bukkit.getOnlinePlayers()) {
             Team team = target.getScoreboard().getTeam(player.getUniqueId().toString());
             if (team != null) {
@@ -83,4 +87,5 @@ public class NametagManager {
             }
         }
     }
+
 }
