@@ -1,14 +1,12 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.challenge.ChallengeType;
 import de.fameless.forceitemplugin.challenge.ExcludeCommand;
 import de.fameless.forceitemplugin.team.TeamManager;
+import de.fameless.forceitemplugin.util.ChallengeType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.scoreboard.Team;
 
 public class NametagManager implements Listener {

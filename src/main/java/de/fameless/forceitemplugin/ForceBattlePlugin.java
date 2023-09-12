@@ -1,6 +1,5 @@
 package de.fameless.forceitemplugin;
 
-import de.fameless.forceitemplugin.bStats.Metrics;
 import de.fameless.forceitemplugin.bStats.UpdateChecker;
 import de.fameless.forceitemplugin.challenge.*;
 import de.fameless.forceitemplugin.files.*;
@@ -11,6 +10,10 @@ import de.fameless.forceitemplugin.team.TeamCommand;
 import de.fameless.forceitemplugin.team.TeamInviteReactCommand;
 import de.fameless.forceitemplugin.timer.Timer;
 import de.fameless.forceitemplugin.timer.TimerUI;
+import de.fameless.forceitemplugin.util.ChallengeType;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.CustomChart;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -79,7 +82,7 @@ public  class ForceBattlePlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(pointsUI, this);
 
         Metrics metrics = new Metrics(this, 19683);
-        Metrics.CustomChart chart = new Metrics.SimplePie("challenge", () -> {
+        CustomChart chart = new SimplePie("challenge", () -> {
             if (ChallengeManager.getChallengeType() == null) {
                 return "No challenge selected";
             } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {

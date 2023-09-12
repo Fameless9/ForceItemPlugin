@@ -1,4 +1,4 @@
-package de.fameless.forceitemplugin.challenge;
+package de.fameless.forceitemplugin.util;
 
 import org.bukkit.NamespacedKey;
 

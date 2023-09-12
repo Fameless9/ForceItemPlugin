@@ -24,24 +24,13 @@ public class MobYML {
     }
 
     public static void addEntry(Player player) throws IOException {
-        List<EntityType> mobs = new ArrayList<EntityType>();
-        List<EntityType> excludedMobs = new ArrayList<EntityType>();
-        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_mobs")) {
-            for (EntityType entityType : EntityType.values()) {
-                if (entityType.equals(EntityType.valueOf(s))) {
-                    excludedMobs.add(EntityType.valueOf(s));
-                }
-            }
-        }
+        List<EntityType> mobs = new ArrayList<>();
+
         for (EntityType entity : EntityType.values()) {
-            if (!entity.equals(EntityType.ENDER_DRAGON)) {
-                if (!entity.equals(EntityType.PLAYER)) {
-                    if (!excludedMobs.contains(entity)) {
-                        mobs.add(entity);
-                    }
-                }
-            }
+            if (getExcludedEntities().contains(entity)) continue;
+            mobs.add(entity);
         }
+
         for (EntityType entity2 : mobs) {
             MobYML.configuration.set(player.getName() + "." + entity2.name(), false);
             saveMobConfig();
@@ -58,5 +47,17 @@ public class MobYML {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+    }
+
+    public static List<EntityType> getExcludedEntities() {
+        List<EntityType> list = new ArrayList<>();
+        list.add(EntityType.ENDER_DRAGON);
+        list.add(EntityType.PLAYER);
+        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_mobs")) {
+            if (EntityType.valueOf(s) != null) {
+                list.add(EntityType.valueOf(s));
+            }
+        }
+        return list;
     }
 }

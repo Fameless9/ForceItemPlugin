@@ -6,6 +6,7 @@ import de.fameless.forceitemplugin.manager.*;
 import de.fameless.forceitemplugin.team.Team;
 import de.fameless.forceitemplugin.team.TeamManager;
 import de.fameless.forceitemplugin.timer.Timer;
+import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ItemProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

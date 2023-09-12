@@ -6,6 +6,8 @@ import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
 import de.fameless.forceitemplugin.manager.NametagManager;
 import de.fameless.forceitemplugin.timer.Timer;
+import de.fameless.forceitemplugin.util.Advancement;
+import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ItemProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -5,6 +5,7 @@ import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
 import de.fameless.forceitemplugin.manager.NametagManager;
+import de.fameless.forceitemplugin.util.ChallengeType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

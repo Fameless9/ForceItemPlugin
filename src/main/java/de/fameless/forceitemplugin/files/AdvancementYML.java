@@ -1,7 +1,7 @@
 package de.fameless.forceitemplugin.files;
 
 import de.fameless.forceitemplugin.ForceBattlePlugin;
-import de.fameless.forceitemplugin.challenge.Advancement;
+import de.fameless.forceitemplugin.util.Advancement;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -26,18 +26,9 @@ public class AdvancementYML {
     public static void addEntry(Player player) {
 
         List<Advancement> advancements = new ArrayList<>();
-        List<Advancement> excludedAdvancements = new ArrayList<>();
-
-        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_advancements")) {
-            for (Advancement advancement : Advancement.values()) {
-                if (Advancement.valueOf(s) == advancement) {
-                    excludedAdvancements.add(advancement);
-                }
-            }
-        }
 
         for (Advancement advancement : Advancement.values()) {
-            if (excludedAdvancements.contains(advancement)) continue;
+            if (getExcludedAdvancements().contains(advancement)) continue;
             advancements.add(advancement);
         }
 
@@ -57,6 +48,19 @@ public class AdvancementYML {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+    }
+
+    public static List<Advancement> getExcludedAdvancements() {
+        List<Advancement> list = new ArrayList<>();
+
+        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_advancements")) {
+            for (Advancement advancement : Advancement.values()) {
+                if (Advancement.valueOf(s) == advancement) {
+                    list.add(advancement);
+                }
+            }
+        }
+        return list;
     }
 
 }

@@ -26,18 +26,9 @@ public class BiomeYML {
     public static void addEntry(Player player) throws IOException {
 
         List<Biome> biomes = new ArrayList<>();
-        List<Biome> excludedBiomes = new ArrayList<>();
-
-        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_biomes")) {
-            for (Biome biome : Biome.values()) {
-                if (Biome.valueOf(s) == biome) {
-                    excludedBiomes.add(biome);
-                }
-            }
-        }
 
         for (Biome biome : Biome.values()) {
-            if (excludedBiomes.contains(biome)) continue;
+            if (getExcludedBiomes().contains(biome)) continue;
             biomes.add(biome);
         }
 
@@ -58,4 +49,19 @@ public class BiomeYML {
             throw new RuntimeException();
         }
     }
+
+    public static List<Biome> getExcludedBiomes() {
+
+        List<Biome> list = new ArrayList<>();
+
+        for (String s : ForceBattlePlugin.getInstance().getConfig().getStringList("excluded_biomes")) {
+            for (Biome biome : Biome.values()) {
+                if (Biome.valueOf(s) == biome) {
+                    list.add(biome);
+                }
+            }
+        }
+        return list;
+    }
+
 }

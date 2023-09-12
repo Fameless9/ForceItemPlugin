@@ -5,7 +5,7 @@ challenge_duration: 5400
 leaderboard_message: false
 
 # unobtainable items in creative are excluded by default
-# important: after adding/removing an item from any excluded ítems list, you need to delete all the progress yml files and restart your server
+# after changing values, you don't have to restart anything or rejoin. Just use /skip <player> if they have an unwanted objective and new items will not contain excluded items
 exclude_spawn_eggs: true # unobtainable in survival
 exclude_music_discs: true # obtainable in survival
 exclude_banner_patterns: true # obtainable in survival
