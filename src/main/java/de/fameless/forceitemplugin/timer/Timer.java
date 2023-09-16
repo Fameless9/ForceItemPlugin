@@ -18,59 +18,57 @@ public class Timer implements CommandExecutor {
     private static int time;
     private static boolean running;
 
-    static {
-        Timer.startTime = ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration");
-    }
-
     public Timer() {
         run();
     }
 
     public static int getStartTime() {
-        return Timer.startTime;
+        return startTime;
     }
 
-    public static void setStartTime(int startTime) {
-        Timer.startTime = startTime;
+    public static void setStartTime(int newStartTime) {
+        startTime = newStartTime;
+        ForceBattlePlugin.getInstance().getConfig().set("challenge_duration", startTime);
+        ForceBattlePlugin.getInstance().saveConfig();
     }
 
     public static int getTime() {
-        return Timer.time;
+        return time;
     }
 
-    public static void setTime(int time) {
-        Timer.time = time;
+    public static void setTime(int newTime) {
+        time = newTime;
     }
 
     public static boolean isRunning() {
-        return Timer.running;
+        return running;
     }
 
-    public static void setRunning(boolean running) {
-        Timer.running = running;
+    public static void setRunning(boolean newRunning) {
+        running = newRunning;
     }
 
     public static void run() {
-        if (ForceBattlePlugin.getInstance().getConfig().get("time") != null) {
+        if (ForceBattlePlugin.getInstance().getConfig().get("time") != null && ForceBattlePlugin.getInstance().getConfig().getBoolean("count_up")) {
             setStartTime(ForceBattlePlugin.getInstance().getConfig().getInt("time"));
         } else if (ForceBattlePlugin.getInstance().getConfig().getBoolean("count_up")) {
             setStartTime(0);
         } else {
             setStartTime(ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration"));
         }
-        setTime(Timer.startTime);
+        setTime(startTime);
         new BukkitRunnable() {
             public void run() {
-                Timer.sendActionbar();
+                sendActionbar();
                 if (ForceBattlePlugin.getInstance().getConfig().getBoolean("count_up")) {
-                    if (Timer.isRunning()) {
-                        Timer.setTime(Timer.getTime() + 1);
+                    if (isRunning()) {
+                        setTime(getTime() + 1);
                     }
-                } else if (Timer.isRunning()) {
-                    Timer.setTime(Timer.getTime() - 1);
-                    if (Timer.time == 0) {
-                        Timer.setRunning(false);
-                        Timer.setTime(Timer.getStartTime());
+                } else if (isRunning()) {
+                    setTime(getTime() - 1);
+                    if (time == 0) {
+                        setRunning(false);
+                        setTime(getStartTime());
                         LeaderboardManager.displayLeaderboard();
                     }
                 }
@@ -80,30 +78,28 @@ public class Timer implements CommandExecutor {
 
     public static void sendActionbar() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            int days = Timer.time / 86400;
-            int hours = Timer.time / 3600 % 24;
-            int minutes = Timer.time / 60 % 60;
-            int seconds = Timer.time % 60;
+            int days = time / 86400;
+            int hours = time / 3600 % 24;
+            int minutes = time / 60 % 60;
+            int seconds = time % 60;
             StringBuilder message = new StringBuilder();
-            if (ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") == -1) {
-                message.append("Infinite Time");
-            } else {
-                if (days >= 1) {
-                    message.append(days).append("d ");
-                }
-                if (hours >= 1) {
-                    message.append(hours).append("h ");
-                }
-                if (minutes >= 1) {
-                    message.append(minutes).append("m ");
-                }
-                if (seconds >= 1) {
-                    message.append(seconds).append("s ");
-                }
-                if (getTime() == 0) {
-                    message.append("0s");
-                }
+
+            if (days >= 1) {
+                message.append(days).append("d ");
             }
+            if (hours >= 1) {
+                message.append(hours).append("h ");
+            }
+            if (minutes >= 1) {
+                message.append(minutes).append("m ");
+            }
+            if (seconds >= 1) {
+                message.append(seconds).append("s ");
+            }
+            if (getTime() == 0) {
+                message.append("0s");
+            }
+
             if (!isRunning()) {
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GOLD.toString() + ChatColor.ITALIC + message));
             } else {

@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public class PointsUI implements CommandExecutor, Listener {
 
-    private static HashMap<UUID, UUID> commandMap = new HashMap<>();
+    private static final HashMap<UUID, UUID> commandMap = new HashMap<>();
 
     public static Inventory getPointsUI(Player target) {
         Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Manage Points");

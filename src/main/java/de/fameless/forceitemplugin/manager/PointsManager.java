@@ -4,6 +4,8 @@ import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.team.Team;
 import de.fameless.forceitemplugin.team.TeamManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -40,15 +42,17 @@ public class PointsManager {
             team.setPoints(newPoints);
             for (UUID uuid : team.getPlayers()) {
                 if (Bukkit.getPlayer(uuid) != null) {
-                    PointsManager.configuration.set(Bukkit.getPlayer(uuid).getName(), newPoints);
+                    Player player1 = Bukkit.getPlayer(uuid);
+                    PointsManager.configuration.set(player1.getName(), newPoints);
                     try {
                         PointsManager.configuration.save(PointsManager.file);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    BossbarManager.updateBossbar(Bukkit.getPlayer(uuid));
-                    NametagManager.updateNametag(Bukkit.getPlayer(uuid));
-                    LeaderboardManager.adjustPoints(Bukkit.getPlayer(uuid));
+                    BossbarManager.updateBossbar(player1);
+                    NametagManager.updateNametag(player1);
+                    LeaderboardManager.adjustPoints(player1);
+                    player1.playSound(player1, Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1, 20);
                 }
             }
         } else {
@@ -59,6 +63,7 @@ public class PointsManager {
                 throw new RuntimeException();
             }
             LeaderboardManager.adjustPoints(player);
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1, 20);
         }
     }
 

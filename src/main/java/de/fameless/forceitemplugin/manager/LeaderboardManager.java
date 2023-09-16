@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class LeaderboardManager {
-    private static Map<UUID, Integer> playerPoints;
+    private static final Map<UUID, Integer> playerPoints;
 
     static {
-        playerPoints = new HashMap<UUID, Integer>();
+        playerPoints = new HashMap<>();
     }
 
     public static void adjustPoints(Player player) {
@@ -22,10 +22,10 @@ public class LeaderboardManager {
     }
 
     public static void displayLeaderboard() {
-        List<Team> excluded = new ArrayList<Team>();
-        List<Map.Entry<UUID, Integer>> sortedEntries = new ArrayList<Map.Entry<UUID, Integer>>(LeaderboardManager.playerPoints.entrySet());
+        List<Team> excluded = new ArrayList<>();
+        List<Map.Entry<UUID, Integer>> sortedEntries = new ArrayList<>(LeaderboardManager.playerPoints.entrySet());
         sortedEntries.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-        StringBuilder message = new StringBuilder(ChatColor.AQUA + "Leaderboard:\n");
+        StringBuilder message = new StringBuilder(ChatColor.GOLD.toString() + ChatColor.BOLD + "LEADERBOARD:\n");
         int position = 1;
         for (Map.Entry<UUID, Integer> entry : sortedEntries) {
             UUID playerId = entry.getKey();
@@ -41,7 +41,7 @@ public class LeaderboardManager {
                         Bukkit.getPlayer(teamPlayers).sendMessage(ChatColor.GOLD + "Your team placed " + position + " with " + team.getPoints() + " points.");
                     }
                 }
-                message.append(ChatColor.GRAY + String.valueOf(position)).append(". ").append(ChatColor.BLUE + "Team " + team.getId()).append(": ").append(ChatColor.LIGHT_PURPLE + String.valueOf(points)).append(" points\n");
+                message.append(ChatColor.GRAY + String.valueOf(position)).append(". ").append(ChatColor.AQUA + "Team " + team.getId()).append(": ").append(ChatColor.GREEN + String.valueOf(points)).append(" points\n");
                 ++position;
                 excluded.add(team);
             } else {
@@ -49,10 +49,11 @@ public class LeaderboardManager {
                     player.sendMessage(ChatColor.GOLD + "You placed: " + position + " with " + points + " points.");
                 }
                 String playerName = (player != null) ? player.getName() : "Unknown";
-                message.append(ChatColor.GRAY + String.valueOf(position)).append(". ").append(ChatColor.BLUE + playerName).append(": ").append(ChatColor.LIGHT_PURPLE + String.valueOf(points)).append(" points\n");
+                message.append(ChatColor.GRAY + String.valueOf(position)).append(". ").append(ChatColor.AQUA + playerName).append(": ").append(ChatColor.GREEN + String.valueOf(points)).append(" points\n");
                 ++position;
             }
         }
+        Bukkit.getServer().broadcastMessage(" ");
         Bukkit.getServer().broadcastMessage(message.toString());
         if (!ForceBattlePlugin.getInstance().getConfig().getBoolean("leaderboard_message")) {
             Bukkit.broadcastMessage(ChatColor.GRAY + "Hello, Thanks a lot for playing my plugin.\n" +

@@ -22,6 +22,7 @@ public class ChallengeCommand implements CommandExecutor, Listener {
 
     public static boolean isKeepInventory;
     public static boolean isBackpackEnabled;
+    public static boolean isResetOnChange = true;
 
     private static String currentChallenge() {
         if (ChallengeManager.getChallengeType() == null) {
@@ -62,11 +63,14 @@ public class ChallengeCommand implements CommandExecutor, Listener {
         inventory.setItem(4, ItemProvider.buildItem(new ItemStack(Material.END_STONE), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Advancement", "", ChatColor.BLUE + "Click to start Force Advancement.", "",
                 ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+        inventory.setItem(6, ItemProvider.buildItem(new ItemStack(Material.REDSTONE_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Reset on Change", "", ChatColor.BLUE + "Click to toggle Reset on Change", ChatColor.BLUE +
+                "Resets progress on challenge select", "", ChatColor.BLUE + "Currently set to: " + isResetOnChange));
         inventory.setItem(8, ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Keep Inventory", "", ChatColor.BLUE + "Click to toggle Keep Inventory in all worlds.", "",
                 ChatColor.BLUE + "Currently set to: " + !ChallengeCommand.isKeepInventory));
         inventory.setItem(7, ItemProvider.buildItem(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
-                ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "", ChatColor.BLUE + "Currently set to: " + ChallengeCommand.isBackpackEnabled));
+                ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "", ChatColor.BLUE + "Currently set to: " + isBackpackEnabled));
         return inventory;
     }
 
@@ -159,6 +163,10 @@ public class ChallengeCommand implements CommandExecutor, Listener {
             } else {
                 Bukkit.broadcastMessage(ChatColor.GOLD + "Backpacks have been disabled.");
             }
+        }
+
+        if (event.getSlot() == 6) {
+            isResetOnChange = !isResetOnChange;
         }
         event.getWhoClicked().openInventory(getInventory());
     }

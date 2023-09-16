@@ -7,10 +7,7 @@ import de.fameless.forceitemplugin.team.Team;
 import de.fameless.forceitemplugin.team.TeamManager;
 import de.fameless.forceitemplugin.timer.Timer;
 import de.fameless.forceitemplugin.util.ItemProvider;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Biome;
@@ -37,7 +34,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 public class Listeners implements Listener {
-    private static ItemStack skipItem = ItemProvider.buildItem(new ItemStack(Material.BARRIER, 3),
+    private static final ItemStack skipItem = ItemProvider.buildItem(new ItemStack(Material.BARRIER, 3),
             ItemProvider.enchantments(), 0, Collections.emptyList(), ChatColor.RED + "Joker",
             ChatColor.BLUE + "Rightclick on a block to skip your item/block");
 
@@ -74,9 +71,9 @@ public class Listeners implements Listener {
                     if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
                         if (ItemManager.itemMap.get(player.getUniqueId()) == null) continue;
                         if (!player.getInventory().contains(ItemManager.itemMap.get(player.getUniqueId()))) continue;
-                        Material material = ItemManager.itemMap.get(player.getUniqueId());
                         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) continue;
-                        if (ItemManager.isFinished(player, material)) continue;
+
+                        Material material = ItemManager.itemMap.get(player.getUniqueId());
 
                         ItemManager.markedAsFinished(player, material);
                         Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " found " + BossbarManager.formatItemName(material.name()).replace("_", " "));
@@ -124,7 +121,6 @@ public class Listeners implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
-        if (ItemManager.isFinished(player, event.getItem().getItemStack().getType())) return;
         if (!event.getItem().getItemStack().getType().equals(ItemManager.itemMap.get(event.getEntity().getUniqueId())))
             return;
 
@@ -186,7 +182,7 @@ public class Listeners implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (ChallengeManager.getChallengeType() == null) return;
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) return;
-        if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1)
+        if (!Timer.isRunning())
             return;
         if (!(event.getDamager() instanceof Player)) return;
 
@@ -302,7 +298,7 @@ public class Listeners implements Listener {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as you have finished the challenge already!");
                 return;
             }
-            if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1) {
+            if (!Timer.isRunning()) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as the challenge hasn't been started.");
                 return;
             }
@@ -362,8 +358,7 @@ public class Listeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         if (ChallengeManager.getChallengeType() == null) return;
-        if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1)
-            return;
+        if (!Timer.isRunning()) return;
         Player player = event.getPlayer();
         if (ExcludeCommand.excludedPlayers.contains(player.getUniqueId())) return;
 

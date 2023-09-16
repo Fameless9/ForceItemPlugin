@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class TeamManager {
-    private static List<Team> allTeams;
+    private static final List<Team> allTeams;
     public static HashMap<Integer, Team> teamMap;
 
     static {

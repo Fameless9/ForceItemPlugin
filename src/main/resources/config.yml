@@ -2,7 +2,7 @@
 # set count_up to true for infinite time. If count_up = true, challenge duration will be ignored.
 count_up: false
 challenge_duration: 5400
-leaderboard_message: false
+leaderboard_message: true
 
 # unobtainable items in creative are excluded by default
 # important: after adding/removing an item from any excluded ítems list, you need to delete all the progress yml files and restart your server

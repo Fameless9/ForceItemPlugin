@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public class Team {
 
-    private int id;
+    private final int id;
     private int points;
-    private List<UUID> players;
-    private Inventory backpack;
+    private final List<UUID> players;
+    private final Inventory backpack;
 
     public Team(int id, List<UUID> players) {
         this.backpack = Bukkit.createInventory(null, 27, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Team Backpack");

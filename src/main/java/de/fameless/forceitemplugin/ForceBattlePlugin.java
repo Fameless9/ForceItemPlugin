@@ -23,7 +23,7 @@ public  class ForceBattlePlugin extends JavaPlugin implements Listener {
     public static boolean isUpdated = true;
     private static ForceBattlePlugin instance;
 
-    private  UpdateChecker updateChecker;
+    private final UpdateChecker updateChecker;
 
     public ForceBattlePlugin() {
         updateChecker = new UpdateChecker(112328, Duration.ofHours(2L));
@@ -99,5 +99,13 @@ public  class ForceBattlePlugin extends JavaPlugin implements Listener {
         metrics.addCustomChart(chart);
 
         Listeners.checkForItem();
+    }
+
+    @Override
+    public void onDisable() {
+        if (getConfig().getBoolean("count_up")) {
+            getConfig().set("time", Timer.getTime());
+            saveConfig();
+        }
     }
 }

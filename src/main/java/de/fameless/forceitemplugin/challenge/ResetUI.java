@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public class ResetUI implements Listener, CommandExecutor {
 
-    private static HashMap<UUID, UUID> commandMap = new HashMap<>();
+    private static final HashMap<UUID, UUID> commandMap = new HashMap<>();
 
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
 

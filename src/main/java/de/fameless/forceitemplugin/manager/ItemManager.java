@@ -17,19 +17,11 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemManager {
-    public static HashMap<UUID, Material> itemMap;
-    public static HashMap<UUID, Material> blockMap;
-    public static HashMap<UUID, EntityType> entityMap;
-    public static HashMap<UUID, Biome> biomeMap;
-    public static HashMap<UUID, Advancement> advancementMap;
-
-    static {
-        ItemManager.itemMap = new HashMap<UUID, Material>();
-        ItemManager.blockMap = new HashMap<UUID, Material>();
-        ItemManager.entityMap = new HashMap<UUID, EntityType>();
-        ItemManager.biomeMap = new HashMap<UUID, Biome>();
-        ItemManager.advancementMap = new HashMap<UUID, Advancement>();
-    }
+    public final static HashMap<UUID, Material> itemMap = new HashMap<>();
+    public final static HashMap<UUID, Material> blockMap = new HashMap<>();
+    public final static HashMap<UUID, EntityType> entityMap = new HashMap<>();
+    public final static HashMap<UUID, Biome> biomeMap = new HashMap<>();
+    public final static HashMap<UUID, Advancement> advancementMap = new HashMap<>();
 
     public static void resetProgress(Player player) {
         for (Material material : Material.values()) {
@@ -63,6 +55,7 @@ public class ItemManager {
         BiomeYML.saveBiomeConfig();
         AdvancementYML.saveAdvancementConfig();
         PointsManager.setPoints(player, 0);
+
         if (ChallengeManager.getChallengeType() != null) {
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
                 ItemManager.entityMap.put(player.getUniqueId(), nextMob(player));
@@ -139,26 +132,12 @@ public class ItemManager {
         }
     }
 
-    public static boolean isFinished(Player player, Material material) {
-        if (ChallengeManager.getChallengeType() == null) {
-            return false;
-        }
-        if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
-            return ItemYML.getItemProgressConfig().getBoolean(player.getName() + "." + material.name());
-        }
-        return ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK) && BlockYML.getBlockProgressConfig().getBoolean(player.getName() + "." + material.name());
-    }
-
-    public static boolean isFinished(Player player, EntityType type) {
-        return ChallengeManager.getChallengeType() != null && ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB) && ItemYML.getItemProgressConfig().getBoolean(player.getName() + "." + type.name());
-    }
-
     public static Material nextItem(Player player) {
         if (ChallengeManager.getChallengeType() == null) {
             return null;
         }
         if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
-            List<Material> materialList = new ArrayList<Material>();
+            List<Material> materialList = new ArrayList<>();
             for (Material material : Material.values()) {
                 if (ItemYML.getItemProgressConfig().contains(player.getName() + "." + material.name())) {
                     if (!ItemYML.getItemProgressConfig().getBoolean(player.getName() + "." + material.name())) {
@@ -175,7 +154,7 @@ public class ItemManager {
             if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
                 return null;
             }
-            List<Material> blockList = new ArrayList<Material>();
+            List<Material> blockList = new ArrayList<>();
             for (Material material : Material.values()) {
                 if (BlockYML.getBlockProgressConfig().contains(player.getName() + "." + material.name())) {
                     if (!BlockYML.getBlockProgressConfig().getBoolean(player.getName() + "." + material.name())) {
@@ -198,7 +177,7 @@ public class ItemManager {
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BIOME)) {
             return null;
         }
-        List<Biome> biomeList = new ArrayList<Biome>();
+        List<Biome> biomeList = new ArrayList<>();
         for (Biome biome : Biome.values()) {
             if (BiomeYML.getBiomeProgressConfig().contains(player.getName() + "." + biome.name())) {
                 if (!BiomeYML.getBiomeProgressConfig().getBoolean(player.getName() + "." + biome.name())) {
@@ -220,7 +199,7 @@ public class ItemManager {
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
             return null;
         }
-        List<EntityType> entityList = new ArrayList<EntityType>();
+        List<EntityType> entityList = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
             if (MobYML.getMobProgressConfig().contains(player.getName() + "." + type.name())) {
                 if (!MobYML.getMobProgressConfig().getBoolean(player.getName() + "." + type.name())) {
@@ -242,7 +221,7 @@ public class ItemManager {
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ADVANCEMENT)) {
             return null;
         }
-        List<Advancement> advancementList = new ArrayList<Advancement>();
+        List<Advancement> advancementList = new ArrayList<>();
         for (Advancement type : Advancement.values()) {
             if (AdvancementYML.getAdvancementProgressConfig().contains(player.getName() + "." + type.name())) {
                 if (!AdvancementYML.getAdvancementProgressConfig().getBoolean(player.getName() + "." + type.name())) {

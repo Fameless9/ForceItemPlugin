@@ -1,15 +1,12 @@
 package de.fameless.forceitemplugin.challenge;
 
-import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
 import de.fameless.forceitemplugin.manager.NametagManager;
 import de.fameless.forceitemplugin.timer.Timer;
 import de.fameless.forceitemplugin.util.ItemProvider;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -28,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SwitchItem implements Listener {
-    private static ItemStack switchItem = ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), ItemProvider.enchantments(),
+    private static final ItemStack switchItem = ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), ItemProvider.enchantments(),
             0, Collections.emptyList(), ChatColor.BLUE + "Swapper", ChatColor.BLUE + "Rightclick to swap your item/block/mob with another player");
 
     public static ItemStack getSwitchItem() {
@@ -60,7 +57,7 @@ public class SwitchItem implements Listener {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as you have finished the challenge already!");
                 return;
             }
-            if (!Timer.isRunning() && ForceBattlePlugin.getInstance().getConfig().getInt("challenge_duration") != -1) {
+            if (!Timer.isRunning()) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You can't do that, as the challenge hasn't been started.");
                 return;
             }
@@ -101,6 +98,8 @@ public class SwitchItem implements Listener {
                         player3.sendMessage(ChatColor.GOLD + event.getPlayer().getName() + " swapped their item with " + target.getName() + ".");
                     }
                 }
+
+                target.playSound(target, Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.MASTER, 1, 20);
 
                 NametagManager.updateNametag(target);
                 NametagManager.updateNametag(event.getPlayer());
