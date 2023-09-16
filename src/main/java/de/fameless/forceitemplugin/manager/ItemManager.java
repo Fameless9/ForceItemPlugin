@@ -1,10 +1,10 @@
 package de.fameless.forceitemplugin.manager;
 
-import de.fameless.forceitemplugin.challenge.Advancement;
-import de.fameless.forceitemplugin.challenge.ChallengeType;
 import de.fameless.forceitemplugin.challenge.Listeners;
 import de.fameless.forceitemplugin.challenge.SwitchItem;
 import de.fameless.forceitemplugin.files.*;
+import de.fameless.forceitemplugin.util.Advancement;
+import de.fameless.forceitemplugin.util.ChallengeType;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
