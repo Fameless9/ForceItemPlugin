@@ -1,29 +1,40 @@
 package de.fameless.forceitemplugin.files;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.fameless.forceitemplugin.ForceBattlePlugin;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlockYML {
 
-    private static File file;
-    private static YamlConfiguration configuration;
+    private static File jsonFile;
 
     public static void setupItemFile() throws IOException {
-        file = new File(ForceBattlePlugin.getInstance().getDataFolder(), "blockprogress.yml");
-        if (!file.exists()) {
-            file.createNewFile();
+        jsonFile = new File(ForceBattlePlugin.getInstance().getDataFolder(), "blockprogress.json");
+        if (!jsonFile.exists()) {
+            jsonFile.createNewFile();
+            JsonObject initialData = new JsonObject();
+            initialData.addProperty("plugin", 1);
+            saveJsonFile(initialData);
         }
-        configuration = YamlConfiguration.loadConfiguration(file);
     }
 
     public static void addEntry(Player player) throws IOException {
+
+        setupItemFile();
+
+        JsonObject rootObject = getRootObject();
+        JsonObject playerObject = getPlayerObject(player);
+        JsonObject materialObject = getMaterialObject(player);
+
+
         List<Material> materials = new ArrayList<>();
 
         for (Material material : Material.values()) {
@@ -34,84 +45,55 @@ public class BlockYML {
         }
 
         for (Material material2 : materials) {
-            configuration.set(player.getName() + "." + material2.name(), false);
-            saveBlockConfig();
+            materialObject.addProperty(material2.name(), false);
         }
-    }
 
-    public static YamlConfiguration getBlockProgressConfig() {
-        return configuration;
-    }
+        playerObject.add("materials", materialObject);
+        rootObject.add(player.getName(), playerObject);
 
-    public static void saveBlockConfig() {
         try {
-            configuration.save(file);
+            FileWriter fileWriter = new FileWriter(jsonFile);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(rootObject, fileWriter);
+            fileWriter.close();
         } catch (IOException e) {
-            throw new RuntimeException();
+            e.printStackTrace();
         }
     }
 
     public static List<Material> getExcludedBlocks() {
         List<Material> list = new ArrayList<>();
 
-        if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
-            for (Material material : Material.values()) {
-                if (material.name().endsWith("BANNER")) {
-                    list.add(material);
-                }
-            }
-        }
-
-
         for (Material material : Material.values()) {
+             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
+                 if (material.name().endsWith("BANNER")) {
+                     list.add(material);
+                 }
+             }
             if (material.name().endsWith("CANDLE_CAKE")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().startsWith("POTTED")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().contains("WALL") && material.name().contains("TORCH")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().contains("WALL") && material.name().contains("SIGN")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().contains("WALL") && material.name().contains("HEAD")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().contains("WALL") && material.name().contains("CORAL")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().contains("WALL") && material.name().contains("BANNER")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().contains("WALL") && material.name().contains("SKULL")) {
                 list.add(material);
             }
-        }
-
-        for (Material material : Material.values()) {
             if (material.name().endsWith("STEM")) {
                 list.add(material);
             }
@@ -123,5 +105,36 @@ public class BlockYML {
             }
         }
         return list;
+    }
+
+    public static JsonObject getRootObject() {
+        JsonParser parser = new JsonParser();
+        try {
+            return parser.parse(new FileReader(jsonFile)).getAsJsonObject();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static JsonObject getPlayerObject(Player player) {
+        if (getRootObject().getAsJsonObject(player.getName()) == null) {
+            return new JsonObject();
+        }
+        return getRootObject().getAsJsonObject(player.getName());
+    }
+
+    public static JsonObject getMaterialObject(Player player) {
+        if (getPlayerObject(player).getAsJsonObject("materials") == null) {
+            return new JsonObject();
+        }
+        return getPlayerObject(player).getAsJsonObject("materials");
+    }
+
+    public static void saveJsonFile(JsonObject data) {
+        try (FileWriter writer = new FileWriter(jsonFile)) {
+            new GsonBuilder().setPrettyPrinting().create().toJson(data, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

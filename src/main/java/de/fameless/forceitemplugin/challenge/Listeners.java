@@ -1,5 +1,7 @@
 package de.fameless.forceitemplugin.challenge;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.files.*;
 import de.fameless.forceitemplugin.manager.*;
@@ -16,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,6 +32,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -207,19 +213,19 @@ public class Listeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         try {
-            if (!ItemYML.getItemProgressConfig().contains(event.getPlayer().getName())) {
+            if (ItemYML.getRootObject() == null || !ItemYML.getRootObject().has(event.getPlayer().getName())) {
                 ItemYML.addEntry(event.getPlayer());
             }
-            if (!BlockYML.getBlockProgressConfig().contains(event.getPlayer().getName())) {
+            if (BlockYML.getRootObject() == null || !BlockYML.getRootObject().has(event.getPlayer().getName())) {
                 BlockYML.addEntry(event.getPlayer());
             }
-            if (!MobYML.getMobProgressConfig().contains(event.getPlayer().getName())) {
+            if (MobYML.getRootObject() == null || !MobYML.getRootObject().has(event.getPlayer().getName())) {
                 MobYML.addEntry(event.getPlayer());
             }
-            if (!BiomeYML.getBiomeProgressConfig().contains(event.getPlayer().getName())) {
+            if (BiomeYML.getRootObject() == null || !BiomeYML.getRootObject().has(event.getPlayer().getName())) {
                 BiomeYML.addEntry(event.getPlayer());
             }
-            if (!AdvancementYML.getAdvancementProgressConfig().contains(event.getPlayer().getName())) {
+            if (AdvancementYML.getRootObject() == null || !AdvancementYML.getRootObject().has(event.getPlayer().getName())) {
                 AdvancementYML.addEntry(event.getPlayer());
             }
         } catch (IOException e) {
