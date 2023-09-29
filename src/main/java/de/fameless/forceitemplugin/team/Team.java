@@ -21,12 +21,35 @@ public class Team {
         this.players = players;
     }
 
-    public int getPoints() { return points; }
-    public void setPoints(int points) { this.points = points; }
-    public Inventory getBackpackInv() { return backpack; }
-    public int getId() { return id; }
-    public List<UUID> getPlayers() { return players; }
-    public void addPlayer(Player player) { players.add(player.getUniqueId()); }
-    public void removePlayer(Player player) { players.remove(player.getUniqueId()); }
-    public void delete() { players.clear(); }
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public Inventory getBackpackInv() {
+        return backpack;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public List<UUID> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player.getUniqueId());
+    }
+
+    public void removePlayer(Player player) {
+        players.remove(player.getUniqueId());
+    }
+
+    public void delete() {
+        players.clear();
+    }
 }

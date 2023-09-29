@@ -4,9 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.fameless.forceitemplugin.ForceBattlePlugin;
-import org.bukkit.Material;
 import org.bukkit.block.Biome;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.*;

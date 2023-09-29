@@ -65,11 +65,11 @@ public class BlockYML {
         List<Material> list = new ArrayList<>();
 
         for (Material material : Material.values()) {
-             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
-                 if (material.name().endsWith("BANNER")) {
-                     list.add(material);
-                 }
-             }
+            if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
+                if (material.name().endsWith("BANNER")) {
+                    list.add(material);
+                }
+            }
             if (material.name().endsWith("CANDLE_CAKE")) {
                 list.add(material);
             }

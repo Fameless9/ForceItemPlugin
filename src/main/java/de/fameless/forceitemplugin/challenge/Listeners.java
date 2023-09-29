@@ -1,7 +1,5 @@
 package de.fameless.forceitemplugin.challenge;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.files.*;
 import de.fameless.forceitemplugin.manager.*;
@@ -10,7 +8,10 @@ import de.fameless.forceitemplugin.team.TeamManager;
 import de.fameless.forceitemplugin.timer.Timer;
 import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ItemProvider;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Biome;
@@ -18,7 +19,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,9 +32,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -90,7 +87,8 @@ public class Listeners implements Listener {
                         BossbarManager.updateBossbar(player);
                     } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ADVANCEMENT)) {
                         if (ItemManager.advancementMap.get(player.getUniqueId()) == null) continue;
-                        if (!hasAdvancement(player, ItemManager.advancementMap.get(player.getUniqueId()).getKey().toString())) continue;
+                        if (!hasAdvancement(player, ItemManager.advancementMap.get(player.getUniqueId()).getKey().toString()))
+                            continue;
 
                         Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " finished " + ItemManager.advancementMap.get(player.getUniqueId()).name);
                         ItemManager.markedAsFinished(player, ItemManager.advancementMap.get(player.getUniqueId()));

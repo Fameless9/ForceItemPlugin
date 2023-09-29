@@ -1,9 +1,6 @@
 package de.fameless.forceitemplugin.manager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.fameless.forceitemplugin.challenge.Listeners;
 import de.fameless.forceitemplugin.challenge.SwitchItem;
 import de.fameless.forceitemplugin.files.*;
@@ -12,14 +9,8 @@ import de.fameless.forceitemplugin.util.ChallengeType;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.A;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

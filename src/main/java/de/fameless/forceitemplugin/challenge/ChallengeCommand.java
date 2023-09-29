@@ -66,7 +66,7 @@ public class ChallengeCommand implements CommandExecutor, Listener {
                 ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
         inventory.setItem(6, ItemProvider.buildItem(new ItemStack(Material.REDSTONE_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Reset on Change", "", ChatColor.BLUE + "Click to toggle Reset on Change", ChatColor.BLUE +
-                "Resets progress on challenge select", "", ChatColor.BLUE + "Currently set to: " + isResetOnChange));
+                        "Resets progress on challenge select", "", ChatColor.BLUE + "Currently set to: " + isResetOnChange));
         inventory.setItem(8, ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Keep Inventory", "", ChatColor.BLUE + "Click to toggle Keep Inventory in all worlds.", "",
                 ChatColor.BLUE + "Currently set to: " + !ChallengeCommand.isKeepInventory));

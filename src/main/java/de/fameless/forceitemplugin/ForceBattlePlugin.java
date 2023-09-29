@@ -21,7 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.time.Duration;
 
-public  class ForceBattlePlugin extends JavaPlugin implements Listener {
+public class ForceBattlePlugin extends JavaPlugin implements Listener {
 
     public static boolean isUpdated = true;
     private static ForceBattlePlugin instance;
