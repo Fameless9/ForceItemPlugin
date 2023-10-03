@@ -68,31 +68,40 @@ public class BlockYML {
             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
                 if (material.name().endsWith("BANNER")) {
                     list.add(material);
+                    continue;
                 }
             }
             if (material.name().endsWith("CANDLE_CAKE")) {
                 list.add(material);
+                continue;
             }
             if (material.name().startsWith("POTTED")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("TORCH")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("SIGN")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("HEAD")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("CORAL")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("BANNER")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("SKULL")) {
                 list.add(material);
+                continue;
             }
             if (material.name().endsWith("STEM")) {
                 list.add(material);

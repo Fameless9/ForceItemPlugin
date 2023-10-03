@@ -3,8 +3,10 @@
 count_up: false
 challenge_duration: 5400
 leaderboard_message: true
+jokers: 3
+swappers: 1
 
-# unobtainable items in creative are excluded by default
+# Most unobtainable items are excluded by default
 # after changing values, you don't have to restart anything or rejoin. Just use /skip <player> if they have an unwanted objective and new items will not contain excluded items
 exclude_spawn_eggs: true # unobtainable in survival
 exclude_music_discs: true # obtainable in survival

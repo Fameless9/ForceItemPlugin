@@ -93,5 +93,4 @@ public class AdvancementYML {
         }
         return list;
     }
-
 }

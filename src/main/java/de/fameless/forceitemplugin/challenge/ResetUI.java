@@ -1,7 +1,11 @@
 package de.fameless.forceitemplugin.challenge;
 
+import de.fameless.forceitemplugin.manager.BossbarManager;
+import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.ItemManager;
+import de.fameless.forceitemplugin.manager.NametagManager;
 import de.fameless.forceitemplugin.timer.Timer;
+import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ItemProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -71,6 +75,8 @@ public class ResetUI implements Listener, CommandExecutor {
             } else {
                 inventory.setItem(4, ItemProvider.buildItem(new ItemStack(Material.GOLD_NUGGET), Collections.emptyList(), 0, Collections.emptyList(), ChatColor.GOLD + "Reset points/finished objectives of " + target.getName(), "", ChatColor.BLUE + "Resets challenge progress of " + target.getName()));
             }
+            inventory.setItem(5, ItemProvider.buildItem(new ItemStack(Material.CHAIN), Collections.emptyList(), 0, Collections.emptyList(),
+                    ChatColor.GOLD + "Reset Chain", "", ChatColor.BLUE + "Reset the chain for every player."));
 
             player.openInventory(inventory);
         }
@@ -96,8 +102,7 @@ public class ResetUI implements Listener, CommandExecutor {
             case 0: {
                 if (target != null) {
                     target.getInventory().clear();
-                    target.getInventory().setItem(7, SwitchItem.getSwitchItem());
-                    target.getInventory().setItem(8, Listeners.getSkipItem());
+                    ItemManager.giveJokers(target);
                     ItemManager.resetProgress(target);
                     target.teleport(target.getWorld().getSpawnLocation());
                     target.setHealth(target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
@@ -111,13 +116,15 @@ public class ResetUI implements Listener, CommandExecutor {
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     player.getInventory().clear();
-                    player.getInventory().setItem(7, SwitchItem.getSwitchItem());
-                    player.getInventory().setItem(8, Listeners.getSkipItem());
+                    ItemManager.giveJokers(player);
                     ItemManager.resetProgress(player);
                     player.teleport(player.getWorld().getSpawnLocation());
                     player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
                     player.setFoodLevel(20);
                 }
+
+                ChainLogic.resetLists();
+
                 Bukkit.broadcastMessage(ChatColor.GOLD + "Challenge has been reset.");
                 break;
             }
@@ -143,15 +150,13 @@ public class ResetUI implements Listener, CommandExecutor {
             }
             case 3: {
                 if (target != null) {
-                    target.getInventory().setItem(7, SwitchItem.getSwitchItem());
-                    target.getInventory().setItem(8, Listeners.getSkipItem());
+                    ItemManager.giveJokers(target);
                     target.sendMessage(ChatColor.GOLD + "Your jokers have been refilled.");
                     break;
                 }
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.getInventory().setItem(7, SwitchItem.getSwitchItem());
-                    player.getInventory().setItem(8, Listeners.getSkipItem());
+                    ItemManager.giveJokers(player);
                 }
 
                 Bukkit.broadcastMessage(ChatColor.GOLD + "Jokers have been refilled.");
@@ -168,7 +173,14 @@ public class ResetUI implements Listener, CommandExecutor {
                     ItemManager.resetProgress(player);
                 }
 
+                ChainLogic.resetLists();
+
                 Bukkit.broadcastMessage(ChatColor.GOLD + "Progress has been reset.");
+                break;
+            }
+            case 5:  {
+                ChainLogic.resetLists();
+                Bukkit.broadcastMessage(ChatColor.GOLD + "Chain has been reset.");
                 break;
             }
         }

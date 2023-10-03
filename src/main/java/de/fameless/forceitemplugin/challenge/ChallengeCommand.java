@@ -1,6 +1,9 @@
 package de.fameless.forceitemplugin.challenge;
 
+import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
+import de.fameless.forceitemplugin.manager.ItemManager;
+import de.fameless.forceitemplugin.manager.NametagManager;
 import de.fameless.forceitemplugin.timer.Timer;
 import de.fameless.forceitemplugin.util.ChallengeType;
 import de.fameless.forceitemplugin.util.ItemProvider;
@@ -64,14 +67,18 @@ public class ChallengeCommand implements CommandExecutor, Listener {
         inventory.setItem(4, ItemProvider.buildItem(new ItemStack(Material.END_STONE), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Advancement", "", ChatColor.BLUE + "Click to start Force Advancement.", "",
                 ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+        inventory.setItem(5, ItemProvider.buildItem(new ItemStack(Material.CHAIN), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Enable Chain Mode", "", ChatColor.BLUE + "Gives every player the same item.", "",
+                ChatColor.BLUE + "Currently set to: " + ChainLogic.isChainMode()));
         inventory.setItem(6, ItemProvider.buildItem(new ItemStack(Material.REDSTONE_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Reset on Change", "", ChatColor.BLUE + "Click to toggle Reset on Change", ChatColor.BLUE +
                         "Resets progress on challenge select", "", ChatColor.BLUE + "Currently set to: " + isResetOnChange));
+        inventory.setItem(7, ItemProvider.buildItem(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "",
+                ChatColor.BLUE + "Currently set to: " + isBackpackEnabled));
         inventory.setItem(8, ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Keep Inventory", "", ChatColor.BLUE + "Click to toggle Keep Inventory in all worlds.", "",
                 ChatColor.BLUE + "Currently set to: " + !ChallengeCommand.isKeepInventory));
-        inventory.setItem(7, ItemProvider.buildItem(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
-                ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "", ChatColor.BLUE + "Currently set to: " + isBackpackEnabled));
         return inventory;
     }
 
@@ -168,6 +175,30 @@ public class ChallengeCommand implements CommandExecutor, Listener {
 
         if (event.getSlot() == 6) {
             isResetOnChange = !isResetOnChange;
+        }
+
+        if (event.getSlot() == 5) {
+            if (ChallengeManager.getChallengeType() == null) {
+                event.getWhoClicked().sendMessage(ChatColor.GOLD + "No challenge selected.");
+                return;
+            }
+            ChainLogic.setChainMode(!ChainLogic.isChainMode());
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
+                    ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
+                } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+                    ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
+                } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
+                    ItemManager.entityMap.put(player.getUniqueId(), ItemManager.nextMob(player));
+                } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BIOME)) {
+                    ItemManager.biomeMap.put(player.getUniqueId(), ItemManager.nextBiome(player));
+                } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ADVANCEMENT)) {
+                    ItemManager.advancementMap.put(player.getUniqueId(), ItemManager.nextAdvancement(player));
+                }
+                NametagManager.updateNametag(player);
+                BossbarManager.updateBossbar(player);
+            }
+            Bukkit.broadcastMessage(ChatColor.GOLD + "Chain mode has been set to: " + ChainLogic.isChainMode());
         }
         event.getWhoClicked().openInventory(getInventory());
     }

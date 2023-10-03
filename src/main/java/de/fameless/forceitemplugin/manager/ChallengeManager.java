@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class ChallengeManager {
+
     private static ChallengeType challengeType;
 
     public static ChallengeType getChallengeType() {

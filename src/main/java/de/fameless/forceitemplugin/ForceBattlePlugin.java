@@ -4,6 +4,7 @@ import de.fameless.forceitemplugin.bStats.UpdateChecker;
 import de.fameless.forceitemplugin.challenge.*;
 import de.fameless.forceitemplugin.files.*;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
+import de.fameless.forceitemplugin.manager.ItemManager;
 import de.fameless.forceitemplugin.manager.PointsManager;
 import de.fameless.forceitemplugin.team.TeamBackpack;
 import de.fameless.forceitemplugin.team.TeamCommand;
@@ -55,7 +56,7 @@ public class ForceBattlePlugin extends JavaPlugin implements Listener {
             BiomeYML.setupItemFile();
             AdvancementYML.setupItemFile();
         } catch (IOException e) {
-            getLogger().severe("Couldn't setup files. Shutting down.");
+            getLogger().severe("Failed to setup files. Shutting down.");
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
@@ -64,12 +65,15 @@ public class ForceBattlePlugin extends JavaPlugin implements Listener {
         ResetUI resetUI = new ResetUI();
         PointsUI pointsUI = new PointsUI();
 
+        ChainLogic.setupLists();
+
         getCommand("timer").setExecutor(timer);
         getCommand("skipitem").setExecutor(new SkipItemCommand());
         getCommand("team").setExecutor(new TeamCommand());
         getCommand("invite").setExecutor(new TeamInviteReactCommand());
         getCommand("backpack").setExecutor(new TeamBackpack());
         getCommand("exclude").setExecutor(new ExcludeCommand());
+        getCommand("result").setExecutor(new SeeItemsCommand());
         getCommand("menu").setExecutor(challengeCommand);
         getCommand("reset").setExecutor(resetUI);
         getCommand("points").setExecutor(pointsUI);
@@ -77,6 +81,7 @@ public class ForceBattlePlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new Listeners(), this);
         Bukkit.getPluginManager().registerEvents(new SwitchItem(), this);
         Bukkit.getPluginManager().registerEvents(new TimerUI(), this);
+        Bukkit.getPluginManager().registerEvents(new SeeItemsGUIListener(),this);
         Bukkit.getPluginManager().registerEvents(resetUI, this);
         Bukkit.getPluginManager().registerEvents(challengeCommand, this);
         Bukkit.getPluginManager().registerEvents(pointsUI, this);
