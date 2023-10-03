@@ -4,12 +4,18 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.fameless.forceitemplugin.ForceBattlePlugin;
+import de.fameless.forceitemplugin.manager.BossbarManager;
+import de.fameless.forceitemplugin.timer.Timer;
+import de.fameless.forceitemplugin.util.FormatTime;
+import it.unimi.dsi.fastutil.Hash;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ItemYML {
 
@@ -63,51 +69,64 @@ public class ItemYML {
             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_spawn_eggs")) {
                 if (material.name().endsWith("SPAWN_EGG")) {
                     list.add(material);
+                    continue;
                 }
             }
             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_music_discs")) {
                 if (material.name().contains("DISC")) {
                     list.add(material);
+                    continue;
                 }
             }
             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banner_patterns")) {
                 if (material.name().endsWith("BANNER_PATTERN")) {
                     list.add(material);
+                    continue;
                 }
             }
             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_banners")) {
                 if (material.name().endsWith("BANNER")) {
                     list.add(material);
+                    continue;
                 }
             }
             if (ForceBattlePlugin.getInstance().getConfig().getBoolean("exclude_armor_templates")) {
                 if (material.name().endsWith("TEMPLATE")) {
                     list.add(material);
+                    continue;
                 }
             }
             if (material.name().endsWith("CANDLE_CAKE")) {
                 list.add(material);
+                continue;
             }
             if (material.name().startsWith("POTTED")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("TORCH")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("SIGN")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("HEAD")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("CORAL")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("BANNER")) {
                 list.add(material);
+                continue;
             }
             if (material.name().contains("WALL") && material.name().contains("SKULL")) {
                 list.add(material);
+                continue;
             }
             if (material.name().endsWith("STEM")) {
                 list.add(material);
@@ -147,4 +166,42 @@ public class ItemYML {
         }
     }
 
+    public static final HashMap<UUID, List<ItemStack>> finishedItemsMap = new HashMap<>();
+
+    public static List<ItemStack> getFinishedItemsFromJson(Player player) {
+        List<ItemStack> list = new ArrayList<>();
+
+        for (String key : getMaterialObject(player).keySet()) {
+            if (getMaterialObject(player).get(key).getAsBoolean()) {
+                list.add(new ItemStack(Material.getMaterial(key)));
+            }
+        }
+
+        return list;
+    }
+
+    public static List<ItemStack> getFinishedItems(Player player) {
+        return finishedItemsMap.get(player.getUniqueId());
+    }
+
+    public static void addFinishedItem(Player player, Material item) {
+        ItemStack stack = new ItemStack(item);
+        ItemMeta meta = stack.getItemMeta();
+
+        meta.setDisplayName(ChatColor.GOLD.toString() + ChatColor.BOLD + BossbarManager.formatItemName(item.name().replace("_", " ")));
+        List<String> lore = new ArrayList<>();
+        lore.add(" ");
+        lore.add(ChatColor.GOLD + "Time" + ChatColor.DARK_GRAY + ": " + ChatColor.GOLD + FormatTime.toFormatted(Timer.getTime()));
+        meta.setLore(lore);
+
+        stack.setItemMeta(meta);
+
+        finishedItemsMap.get(player.getUniqueId()).add(stack);
+    }
+
+    public static void removeFinishedItem(Player player, Material item) {
+        List<ItemStack> playerList = finishedItemsMap.get(player.getUniqueId());
+        playerList.remove(new ItemStack(item));
+        finishedItemsMap.put(player.getUniqueId(), playerList);
+    }
 }

@@ -1,5 +1,5 @@
 name: ForceBattlePlugin
-version: '4.6.0'
+version: '4.6.4'
 main: de.fameless.forceitemplugin.ForceBattlePlugin
 api-version: '1.20'
 author: fameless9
@@ -17,3 +17,4 @@ commands:
   menu:
   reset:
   points:
+  result:

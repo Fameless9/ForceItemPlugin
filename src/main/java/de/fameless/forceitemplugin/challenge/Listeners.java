@@ -92,6 +92,9 @@ public class Listeners implements Listener {
 
                         Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " finished " + ItemManager.advancementMap.get(player.getUniqueId()).name);
                         ItemManager.markedAsFinished(player, ItemManager.advancementMap.get(player.getUniqueId()));
+                        if (ChainLogic.isChainMode()) {
+                            ChainLogic.chainProgressAdvancementHashMap.get(player.getUniqueId()).remove(0);
+                        }
                         ItemManager.advancementMap.put(player.getUniqueId(), ItemManager.nextAdvancement(player));
                         if (ItemManager.nextAdvancement(player) != null) {
                             player.sendMessage(ChatColor.DARK_GRAY + "---------------------");
@@ -131,6 +134,9 @@ public class Listeners implements Listener {
 
         ItemManager.markedAsFinished(player, event.getItem().getItemStack().getType());
         Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " found " + BossbarManager.formatItemName(event.getItem().getItemStack().getType().name()).replace("_", " "));
+        if (ChainLogic.isChainMode()) {
+            ChainLogic.chainProgressItemHashMap.get(player.getUniqueId()).remove(0);
+        }
         ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
         PointsManager.addPoint(player);
         NametagManager.updateNametag(player);
@@ -201,6 +207,9 @@ public class Listeners implements Listener {
         if (event.getEntity().getType().equals(ItemManager.entityMap.get(player.getUniqueId()))) {
             ItemManager.markedAsFinished(player, event.getEntity().getType());
             Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + " finished " + BossbarManager.formatItemName(ItemManager.entityMap.get(player.getUniqueId()).name()).replace("_", " "));
+            if (ChainLogic.isChainMode()) {
+                ChainLogic.chainProgressMobHashMap.get(player.getUniqueId()).remove(0);
+            }
             ItemManager.entityMap.put(player.getUniqueId(), ItemManager.nextMob(player));
             PointsManager.addPoint(player);
             NametagManager.updateNametag(player);
@@ -243,6 +252,25 @@ public class Listeners implements Listener {
         }
         if (!ItemManager.advancementMap.containsKey(event.getPlayer().getUniqueId()) && ItemManager.nextAdvancement(event.getPlayer()) != null) {
             ItemManager.advancementMap.put(event.getPlayer().getUniqueId(), ItemManager.nextAdvancement(event.getPlayer()));
+        }
+        if (!ItemYML.finishedItemsMap.containsKey(event.getPlayer().getUniqueId())) {
+            ItemYML.finishedItemsMap.put(event.getPlayer().getUniqueId(), ItemYML.getFinishedItemsFromJson(event.getPlayer()));
+        }
+
+        if (!ChainLogic.chainProgressItemHashMap.containsKey(event.getPlayer().getUniqueId())) {
+            ChainLogic.chainProgressItemHashMap.put(event.getPlayer().getUniqueId(), ChainLogic.getItemChainList());
+        }
+        if (!ChainLogic.chainProgressBlockHashMap.containsKey(event.getPlayer().getUniqueId())) {
+            ChainLogic.chainProgressBlockHashMap.put(event.getPlayer().getUniqueId(), ChainLogic.getBlockChainList());
+        }
+        if (!ChainLogic.chainProgressMobHashMap.containsKey(event.getPlayer().getUniqueId())) {
+            ChainLogic.chainProgressMobHashMap.put(event.getPlayer().getUniqueId(), ChainLogic.getMobChainList());
+        }
+        if (!ChainLogic.chainProgressBiomeHashMap.containsKey(event.getPlayer().getUniqueId())) {
+            ChainLogic.chainProgressBiomeHashMap.put(event.getPlayer().getUniqueId(), ChainLogic.getBiomeChainList());
+        }
+        if (!ChainLogic.chainProgressAdvancementHashMap.containsKey(event.getPlayer().getUniqueId())) {
+            ChainLogic.chainProgressAdvancementHashMap.put(event.getPlayer().getUniqueId(), ChainLogic.getAdvancementChainList());
         }
 
         BossbarManager.createBossbar(event.getPlayer());
@@ -319,6 +347,9 @@ public class Listeners implements Listener {
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.itemMap.get(event.getPlayer().getUniqueId()));
                 String itemName = BossbarManager.formatItemName(ItemManager.itemMap.get(event.getPlayer().getUniqueId()).name()).replace("_", " ");
                 Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " skipped " + itemName);
+                if (ChainLogic.isChainMode()) {
+                    ChainLogic.chainProgressItemHashMap.get(event.getPlayer().getUniqueId()).remove(0);
+                }
                 ItemManager.itemMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
@@ -328,6 +359,9 @@ public class Listeners implements Listener {
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.blockMap.get(event.getPlayer().getUniqueId()));
                 String blockName = BossbarManager.formatItemName(ItemManager.blockMap.get(event.getPlayer().getUniqueId()).name()).replace("_", " ");
                 Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " skipped " + blockName);
+                if (ChainLogic.isChainMode()) {
+                    ChainLogic.chainProgressBlockHashMap.get(event.getPlayer().getUniqueId()).remove(0);
+                }
                 ItemManager.blockMap.put(event.getPlayer().getUniqueId(), ItemManager.nextItem(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
@@ -336,6 +370,9 @@ public class Listeners implements Listener {
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.entityMap.get(event.getPlayer().getUniqueId()));
                 String entityName = BossbarManager.formatItemName(ItemManager.entityMap.get(event.getPlayer().getUniqueId()).name()).replace("_", " ");
                 Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " skipped " + entityName);
+                if (ChainLogic.isChainMode()) {
+                    ChainLogic.chainProgressMobHashMap.get(event.getPlayer().getUniqueId()).remove(0);
+                }
                 ItemManager.entityMap.put(event.getPlayer().getUniqueId(), ItemManager.nextMob(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
@@ -344,6 +381,9 @@ public class Listeners implements Listener {
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.biomeMap.get(event.getPlayer().getUniqueId()));
                 String biomeName = BossbarManager.formatItemName(ItemManager.biomeMap.get(event.getPlayer().getUniqueId()).name()).replace("_", " ");
                 Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " skipped " + biomeName);
+                if (ChainLogic.isChainMode()) {
+                    ChainLogic.chainProgressBiomeHashMap.get(event.getPlayer().getUniqueId()).remove(0);
+                }
                 ItemManager.biomeMap.put(event.getPlayer().getUniqueId(), ItemManager.nextBiome(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
@@ -352,6 +392,9 @@ public class Listeners implements Listener {
                 ItemManager.markedAsFinished(event.getPlayer(), ItemManager.advancementMap.get(event.getPlayer().getUniqueId()));
                 String advancementName = ItemManager.advancementMap.get(event.getPlayer().getUniqueId()).getName();
                 Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " skipped " + advancementName);
+                if (ChainLogic.isChainMode()) {
+                    ChainLogic.chainProgressAdvancementHashMap.get(event.getPlayer().getUniqueId()).remove(0);
+                }
                 ItemManager.advancementMap.put(event.getPlayer().getUniqueId(), ItemManager.nextAdvancement(event.getPlayer()));
                 PointsManager.addPoint(event.getPlayer());
                 NametagManager.updateNametag(event.getPlayer());
@@ -378,6 +421,9 @@ public class Listeners implements Listener {
             if (this.isSameBlockType(blockState, player) || this.isSameBlockType(blockBelowState, player)) {
                 ItemManager.markedAsFinished(player, block.getType());
                 Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " finished " + BossbarManager.formatItemName(ItemManager.blockMap.get(player.getUniqueId()).name()).replace("_", " "));
+                if (ChainLogic.isChainMode()) {
+                    ChainLogic.chainProgressBlockHashMap.get(event.getPlayer().getUniqueId()).remove(0);
+                }
                 ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
                 PointsManager.addPoint(player);
                 NametagManager.updateNametag(player);
@@ -392,6 +438,9 @@ public class Listeners implements Listener {
             }
             Bukkit.broadcastMessage(ChatColor.GOLD + event.getPlayer().getName() + " found " + BossbarManager.formatItemName(ItemManager.biomeMap.get(player.getUniqueId()).name()).replace("_", " "));
             ItemManager.markedAsFinished(player, biome);
+            if (ChainLogic.isChainMode()) {
+                ChainLogic.chainProgressBiomeHashMap.get(event.getPlayer().getUniqueId()).remove(0);
+            }
             ItemManager.biomeMap.put(player.getUniqueId(), ItemManager.nextBiome(player));
             PointsManager.addPoint(player);
             NametagManager.updateNametag(player);

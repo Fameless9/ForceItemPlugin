@@ -3,6 +3,7 @@ package de.fameless.forceitemplugin.timer;
 import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
 import de.fameless.forceitemplugin.manager.LeaderboardManager;
+import de.fameless.forceitemplugin.util.FormatTime;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -78,32 +79,11 @@ public class Timer implements CommandExecutor {
 
     public static void sendActionbar() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            int days = time / 86400;
-            int hours = time / 3600 % 24;
-            int minutes = time / 60 % 60;
-            int seconds = time % 60;
-            StringBuilder message = new StringBuilder();
-
-            if (days >= 1) {
-                message.append(days).append("d ");
-            }
-            if (hours >= 1) {
-                message.append(hours).append("h ");
-            }
-            if (minutes >= 1) {
-                message.append(minutes).append("m ");
-            }
-            if (seconds >= 1) {
-                message.append(seconds).append("s ");
-            }
-            if (getTime() == 0) {
-                message.append("0s");
-            }
 
             if (!isRunning()) {
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GOLD.toString() + ChatColor.ITALIC + message));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GOLD.toString() + ChatColor.ITALIC + FormatTime.toFormatted(time)));
             } else {
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GOLD.toString() + message));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GOLD.toString() + FormatTime.toFormatted(time)));
             }
         }
     }

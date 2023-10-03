@@ -1,6 +1,7 @@
 package de.fameless.forceitemplugin.manager;
 
 import com.google.gson.JsonObject;
+import de.fameless.forceitemplugin.challenge.ChainLogic;
 import de.fameless.forceitemplugin.challenge.Listeners;
 import de.fameless.forceitemplugin.challenge.SwitchItem;
 import de.fameless.forceitemplugin.files.*;
@@ -8,6 +9,7 @@ import de.fameless.forceitemplugin.util.Advancement;
 import de.fameless.forceitemplugin.util.ChallengeType;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.block.data.type.Chain;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -18,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemManager {
+
     public final static HashMap<UUID, Material> itemMap = new HashMap<>();
     public final static HashMap<UUID, Material> blockMap = new HashMap<>();
     public final static HashMap<UUID, EntityType> entityMap = new HashMap<>();
@@ -48,6 +51,7 @@ public class ItemManager {
                     materialObjectBlock.addProperty(material.name(), false);
                 }
             }
+            ItemYML.removeFinishedItem(player, material);
         }
 
         playerObject.add("materials", materialObject);
@@ -114,31 +118,31 @@ public class ItemManager {
 
         if (ChallengeManager.getChallengeType() != null) {
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_MOB)) {
-                ItemManager.entityMap.put(player.getUniqueId(), nextMob(player));
+                ItemManager.entityMap.put(player.getUniqueId(), ItemManager.nextMob(player));
                 BossbarManager.updateBossbar(player);
                 NametagManager.updateNametag(player);
                 return;
             }
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
-                ItemManager.itemMap.put(player.getUniqueId(), nextItem(player));
+                ItemManager.itemMap.put(player.getUniqueId(), ItemManager.nextItem(player));
                 BossbarManager.updateBossbar(player);
                 NametagManager.updateNametag(player);
                 return;
             }
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
-                ItemManager.blockMap.put(player.getUniqueId(), nextItem(player));
+                ItemManager.blockMap.put(player.getUniqueId(), ItemManager.nextItem(player));
                 BossbarManager.updateBossbar(player);
                 NametagManager.updateNametag(player);
                 return;
             }
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BIOME)) {
-                ItemManager.biomeMap.put(player.getUniqueId(), nextBiome(player));
+                ItemManager.biomeMap.put(player.getUniqueId(), ItemManager.nextBiome(player));
                 BossbarManager.updateBossbar(player);
                 NametagManager.updateNametag(player);
                 return;
             }
             if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ADVANCEMENT)) {
-                ItemManager.advancementMap.put(player.getUniqueId(), nextAdvancement(player));
+                ItemManager.advancementMap.put(player.getUniqueId(), ItemManager.nextAdvancement(player));
                 BossbarManager.updateBossbar(player);
                 NametagManager.updateNametag(player);
             }
@@ -161,7 +165,9 @@ public class ItemManager {
                 rootObject.add(player.getName(), playerObject);
 
                 ItemYML.saveJsonFile(rootObject);
+                ItemYML.addFinishedItem(player, item);
             }
+
         } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
             JsonObject rootObject = BlockYML.getRootObject();
             JsonObject materialObject = BlockYML.getMaterialObject(player);
@@ -244,6 +250,15 @@ public class ItemManager {
         }
         if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ITEM)) {
 
+            if (ChainLogic.isChainMode()) {
+                List<Material> chainProgressItems = ChainLogic.chainProgressItemHashMap.get(player.getUniqueId());
+                if (chainProgressItems != null && !chainProgressItems.isEmpty()) {
+                    return chainProgressItems.get(0);
+                } else {
+                    return null;
+                }
+            }
+
             JsonObject materialObject = ItemYML.getMaterialObject(player);
 
             List<Material> materialList = new ArrayList<>();
@@ -262,9 +277,16 @@ public class ItemManager {
 
             ThreadLocalRandom random = ThreadLocalRandom.current();
             return materialList.get(random.nextInt(materialList.size()));
-        } else {
-            if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
-                return null;
+
+        } else if (ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BLOCK)) {
+
+            if (ChainLogic.isChainMode()) {
+                List<Material> chainProgressBlocks = ChainLogic.chainProgressBlockHashMap.get(player.getUniqueId());
+                if (chainProgressBlocks != null && !chainProgressBlocks.isEmpty()) {
+                    return chainProgressBlocks.get(0);
+                } else {
+                    return null;
+                }
             }
 
             JsonObject materialObject = BlockYML.getMaterialObject(player);
@@ -284,6 +306,7 @@ public class ItemManager {
             ThreadLocalRandom random = ThreadLocalRandom.current();
             return blockList.get(random.nextInt(blockList.size()));
         }
+        return null;
     }
 
     public static Biome nextBiome(Player player) {
@@ -292,6 +315,15 @@ public class ItemManager {
         }
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_BIOME)) {
             return null;
+        }
+
+        if (ChainLogic.isChainMode()) {
+            List<Biome> chainProgressBiomes = ChainLogic.chainProgressBiomeHashMap.get(player.getUniqueId());
+            if (chainProgressBiomes != null && !chainProgressBiomes.isEmpty()) {
+                return chainProgressBiomes.get(0);
+            } else {
+                return null;
+            }
         }
 
         JsonObject biomeObject = BiomeYML.getBiomeObject(player);
@@ -321,6 +353,15 @@ public class ItemManager {
             return null;
         }
 
+        if (ChainLogic.isChainMode()) {
+            List<EntityType> chainProgressMob = ChainLogic.chainProgressMobHashMap.get(player.getUniqueId());
+            if (chainProgressMob != null && !chainProgressMob.isEmpty()) {
+                return chainProgressMob.get(0);
+            } else {
+                return null;
+            }
+        }
+
         JsonObject mobObject = MobYML.getMobObject(player);
 
         List<EntityType> entityList = new ArrayList<>();
@@ -346,6 +387,15 @@ public class ItemManager {
         }
         if (!ChallengeManager.getChallengeType().equals(ChallengeType.FORCE_ADVANCEMENT)) {
             return null;
+        }
+
+        if (ChainLogic.isChainMode()) {
+            List<Advancement> chainProgressAdvancement = ChainLogic.chainProgressAdvancementHashMap.get(player.getUniqueId());
+            if (chainProgressAdvancement != null && !chainProgressAdvancement.isEmpty()) {
+                return chainProgressAdvancement.get(0);
+            } else {
+                return null;
+            }
         }
 
         JsonObject advObject = AdvancementYML.getAdvancementObject(player);
