@@ -1,7 +1,6 @@
 package de.fameless.forceitemplugin.manager;
 
 import de.fameless.forceitemplugin.ForceBattlePlugin;
-import de.fameless.forceitemplugin.challenge.ChainLogic;
 import de.fameless.forceitemplugin.team.Team;
 import de.fameless.forceitemplugin.team.TeamManager;
 import org.bukkit.Bukkit;

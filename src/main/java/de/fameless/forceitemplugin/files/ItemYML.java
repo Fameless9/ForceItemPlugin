@@ -7,7 +7,6 @@ import de.fameless.forceitemplugin.ForceBattlePlugin;
 import de.fameless.forceitemplugin.manager.BossbarManager;
 import de.fameless.forceitemplugin.timer.Timer;
 import de.fameless.forceitemplugin.util.FormatTime;
-import it.unimi.dsi.fastutil.Hash;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,7 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class ItemYML {
 

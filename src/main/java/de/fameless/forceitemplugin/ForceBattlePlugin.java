@@ -4,7 +4,6 @@ import de.fameless.forceitemplugin.bStats.UpdateChecker;
 import de.fameless.forceitemplugin.challenge.*;
 import de.fameless.forceitemplugin.files.*;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
-import de.fameless.forceitemplugin.manager.ItemManager;
 import de.fameless.forceitemplugin.manager.PointsManager;
 import de.fameless.forceitemplugin.team.TeamBackpack;
 import de.fameless.forceitemplugin.team.TeamCommand;

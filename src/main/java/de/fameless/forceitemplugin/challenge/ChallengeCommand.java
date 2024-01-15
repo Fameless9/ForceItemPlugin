@@ -51,34 +51,35 @@ public class ChallengeCommand implements CommandExecutor, Listener {
     }
 
     public static Inventory getInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Challenges");
+        Inventory inventory = Bukkit.createInventory(null, 18, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Challenges");
         inventory.setItem(0, ItemProvider.buildItem(new ItemStack(Material.ITEM_FRAME), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Item", "", ChatColor.BLUE + "Click to start Force Item.",
-                "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+                "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(), "", isResetOnChange ? ChatColor.GRAY + "Progress from current challenge will be reset." : ""));
         inventory.setItem(1, ItemProvider.buildItem(new ItemStack(Material.GRASS_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Block", "", ChatColor.BLUE + "Click to start Force Block.",
-                "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+                "", ChatColor.BLUE + "Current Challenge: " + currentChallenge(), "", isResetOnChange ? ChatColor.GRAY + "Progress from current challenge will be reset." : ""));
         inventory.setItem(2, ItemProvider.buildItem(new ItemStack(Material.DIAMOND_SWORD), ItemProvider.enchantments(Enchantment.KNOCKBACK), 1,
                 ItemProvider.itemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS), ChatColor.GOLD + "Force Mob",
-                "", ChatColor.BLUE + "Click to start Force Mob.", "", ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+                "", ChatColor.BLUE + "Click to start Force Mob.", "", ChatColor.BLUE + "Current challenge: " + currentChallenge(), "",
+                isResetOnChange ? ChatColor.GRAY + "Progress from current challenge will be reset." : ""));
         inventory.setItem(3, ItemProvider.buildItem(new ItemStack(Material.SPRUCE_SAPLING), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Biome", "", ChatColor.BLUE + "Click to start Force Biome.",
-                "", ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
+                "", ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", isResetOnChange ? ChatColor.GRAY + "Progress from current challenge will be reset." : ""));
         inventory.setItem(4, ItemProvider.buildItem(new ItemStack(Material.END_STONE), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Force Advancement", "", ChatColor.BLUE + "Click to start Force Advancement.", "",
-                ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", ChatColor.GRAY + "Progress from current challenge will be reset."));
-        inventory.setItem(5, ItemProvider.buildItem(new ItemStack(Material.CHAIN), Collections.emptyList(), 0, Collections.emptyList(),
-                ChatColor.GOLD + "Enable Chain Mode", "", ChatColor.BLUE + "Gives every player the same item.", "",
-                ChatColor.BLUE + "Currently set to: " + ChainLogic.isChainMode()));
-        inventory.setItem(6, ItemProvider.buildItem(new ItemStack(Material.REDSTONE_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
-                ChatColor.GOLD + "Reset on Change", "", ChatColor.BLUE + "Click to toggle Reset on Change", ChatColor.BLUE +
-                        "Resets progress on challenge select", "", ChatColor.BLUE + "Currently set to: " + isResetOnChange));
-        inventory.setItem(7, ItemProvider.buildItem(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
-                ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "",
-                ChatColor.BLUE + "Currently set to: " + isBackpackEnabled));
-        inventory.setItem(8, ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.BLUE + "Current challenge: " + currentChallenge(), "", isResetOnChange ? ChatColor.GRAY + "Progress from current challenge will be reset." : ""));
+        inventory.setItem(9, ItemProvider.buildItem(new ItemStack(Material.STRUCTURE_VOID), Collections.emptyList(), 0, Collections.emptyList(),
                 ChatColor.GOLD + "Keep Inventory", "", ChatColor.BLUE + "Click to toggle Keep Inventory in all worlds.", "",
                 ChatColor.BLUE + "Currently set to: " + !ChallengeCommand.isKeepInventory));
+        inventory.setItem(10, ItemProvider.buildItem(new ItemStack(Material.CHEST), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Enable Backpacks", "", ChatColor.BLUE + "Click to toggle Backpacks on or off.", "",
+                ChatColor.BLUE + "Currently set to: " + isBackpackEnabled));
+        inventory.setItem(11, ItemProvider.buildItem(new ItemStack(Material.REDSTONE_BLOCK), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Reset on Change", "", ChatColor.BLUE + "Click to toggle Reset on Change", ChatColor.BLUE +
+                        "Resets progress on challenge select", "", ChatColor.BLUE + "Currently set to: " + isResetOnChange));
+        inventory.setItem(12, ItemProvider.buildItem(new ItemStack(Material.CHAIN), Collections.emptyList(), 0, Collections.emptyList(),
+                ChatColor.GOLD + "Enable Chain Mode", "", ChatColor.BLUE + "Gives every player the same item.", "",
+                ChatColor.BLUE + "Currently set to: " + ChainLogic.isChainMode()));
         return inventory;
     }
 
@@ -153,7 +154,7 @@ public class ChallengeCommand implements CommandExecutor, Listener {
             }
         }
 
-        if (event.getSlot() == 8) {
+        if (event.getSlot() == 9) {
             for (World world : Bukkit.getServer().getWorlds()) {
                 if (world != null) {
                     world.setGameRule(GameRule.KEEP_INVENTORY, ChallengeCommand.isKeepInventory);
@@ -164,7 +165,7 @@ public class ChallengeCommand implements CommandExecutor, Listener {
             ChallengeCommand.isKeepInventory = !ChallengeCommand.isKeepInventory;
         }
 
-        if (event.getSlot() == 7) {
+        if (event.getSlot() == 10) {
             ChallengeCommand.isBackpackEnabled = !ChallengeCommand.isBackpackEnabled;
             if (ChallengeCommand.isBackpackEnabled) {
                 Bukkit.broadcastMessage(ChatColor.GOLD + "Backpacks have been enabled.");
@@ -173,11 +174,11 @@ public class ChallengeCommand implements CommandExecutor, Listener {
             }
         }
 
-        if (event.getSlot() == 6) {
+        if (event.getSlot() == 11) {
             isResetOnChange = !isResetOnChange;
         }
 
-        if (event.getSlot() == 5) {
+        if (event.getSlot() == 12) {
             if (ChallengeManager.getChallengeType() == null) {
                 event.getWhoClicked().sendMessage(ChatColor.GOLD + "No challenge selected.");
                 return;

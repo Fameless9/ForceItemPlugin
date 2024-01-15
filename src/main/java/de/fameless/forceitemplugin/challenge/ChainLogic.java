@@ -8,7 +8,6 @@ import de.fameless.forceitemplugin.manager.NametagManager;
 import de.fameless.forceitemplugin.util.Advancement;
 import de.fameless.forceitemplugin.util.ChallengeType;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
