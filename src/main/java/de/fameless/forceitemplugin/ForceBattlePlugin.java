@@ -1,6 +1,5 @@
 package de.fameless.forceitemplugin;
 
-import de.fameless.forceitemplugin.bStats.UpdateChecker;
 import de.fameless.forceitemplugin.challenge.*;
 import de.fameless.forceitemplugin.files.*;
 import de.fameless.forceitemplugin.manager.ChallengeManager;
@@ -19,18 +18,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.time.Duration;
 
 public class ForceBattlePlugin extends JavaPlugin implements Listener {
 
     public static boolean isUpdated = true;
     private static ForceBattlePlugin instance;
-
-    private final UpdateChecker updateChecker;
-
-    public ForceBattlePlugin() {
-        updateChecker = new UpdateChecker(112328, Duration.ofHours(2L));
-    }
 
     public static ForceBattlePlugin getInstance() {
         return ForceBattlePlugin.instance;
@@ -41,7 +33,6 @@ public class ForceBattlePlugin extends JavaPlugin implements Listener {
         saveDefaultConfig();
 
         ForceBattlePlugin.instance = this;
-        updateChecker.checkForUpdates();
 
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
